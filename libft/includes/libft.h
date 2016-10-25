@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/18 11:01:11 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/21 20:38:49 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/24 16:56:48 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ typedef struct		s_array
 # define FT_ARY_ERR_ISVIEW -2
 # define FT_ARY_ERR_BOUNDS -3
 
-t_array				*ft_ary_create(const size_t sizeof_item);
+t_array				ft_ary_create(const size_t sizeof_item);
 t_array				ft_ary_viewof(void *ptr, size_t count,
 						const size_t sizeof_item);
 void				*ft_ary_get(t_array *ary, size_t idx);
@@ -157,13 +157,14 @@ int					ft_ary_insert(t_array *ary, void *item, size_t idx);
 int					ft_ary_remove(t_array *ary, size_t idx);
 int					ft_ary_remove_mul(t_array *ary, size_t idx, size_t count);
 int					ft_ary_clear(t_array *ary);
+void				ft_ary_foreach(t_array *ary, void (*func)(void*, size_t));
 void				ft_ary_destroy(t_array *ary);
 void				ft_ary_destroy2(t_array **pary);
 void				ft_ary_swap(t_array *ary, size_t i, size_t j);
+void				ft_ary_sort(t_array *ary, int (*cmp)(void*, void*, size_t));
 
 /*
 ** int	ft_ary_cmp(t_array *ary1, t_array *ary2);
-** void	ft_ary_sort(t_array *ary, int (*cmp)(void*, void*, size_t));
 */
 
 /*

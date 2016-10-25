@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ary_create.c                                    :+:      :+:    :+:   */
+/*   ft_ary_foreach.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/09/24 14:23:42 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/24 15:56:26 by kyork            ###   ########.fr       */
+/*   Created: 2016/10/24 15:37:14 by kyork             #+#    #+#             */
+/*   Updated: 2016/10/24 15:39:07 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
-t_array		ft_ary_create(size_t sizeof_item)
+void		ft_ary_foreach(t_array *ary, void (*func)(void*, size_t))
 {
-	t_array	ary;
+	size_t	idx;
 
-	ary = (t_array){(void*)ft_memalloc(sizeof_item * FT_ARY_DEFAULT_CAP),
-		sizeof_item, 0, FT_ARY_DEFAULT_CAP};
-	if (!ary.ptr)
+	idx = 0;
+	while (idx < ary->item_count)
 	{
-		return ((t_array){0, 0, 0, 0});
+		func(ft_ary_get(ary, idx), ary->item_size);
+		idx++;
 	}
-	return (ary);
 }
