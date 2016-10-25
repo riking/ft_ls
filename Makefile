@@ -6,17 +6,16 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/10/23 15:56:53 by kyork            ###   ########.fr        #
+#    Updated: 2016/10/24 16:56:18 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= libftprintf.a
+NAME		= ft_ls
 
-FILENAMES	+= 
+FILENAMES	+= ft_read_dir.c main.c free_struct.c
 
 OBJS		= $(addprefix build/, $(FILENAMES:.c=.o))
-OBJS		+= libft/libft.a
-OBJS		+= libft/libftprintf.a
+LIBS		= libft/libft.a libft/libftprintf.a
 
 CFLAGS		+= -Wall -Wextra -Wmissing-prototypes
 #CFLAGS		= -Wall -Wextra -Wfloat-equal -Wundef -Wint-to-pointer-cast -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wcast-qual -Wmissing-prototypes -Wstrict-overflow=5 -Wwrite-strings -Wconversion --pedantic-errors
@@ -32,14 +31,14 @@ endif
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) $(LIBS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) -L libft -lft -lftprintf
 
 libft/libft.a:
-	make -C libft $@
+	make -C libft libft.a
 
 libft/libftprintf.a:
-	make -C libft $@
+	make -C libft libftprintf.a
 
 clean:
 	rm -rf build
