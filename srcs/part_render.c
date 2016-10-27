@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 13:59:28 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 14:56:14 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 15:15:04 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,11 @@ char				*render_size(t_dirent *e)
 	{
 		minor = e->stat.st_dev & 0x00FFFFFF;
 		major = (e->stat.st_dev & 0xFF000000) >> 24;
-		ft_asprintf(&s, "%3d, %3d", major, minor);
+		ASGUARD(GFAIL(NULL, (void)0), &s, "%3d, %3d", major, minor);
+	}
+	else
+	{
+		ASGUARD(GFAIL(NULL, (void)0), &s, "%lld", e->stat.st_size);
 	}
 	return (NULL);
 }

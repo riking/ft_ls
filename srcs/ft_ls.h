@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 14:56:08 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 15:29:35 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <libft.h>
 # include <sys/types.h>
 # include <stdbool.h>
+# include <time.h>
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
 
@@ -47,16 +48,22 @@ void				free_dir(t_dir_content *content);
 void				free_dirent(void *ptr, size_t size);
 void				free_string(void *ptr, size_t size);
 
+typedef enum		e_wtime {
+	TIME_M,
+	TIME_A,
+	TIME_C,
+	TIME_B,
+}					t_wtime;
+
+#define TIME_DEFAULT TIME_M
+
 typedef struct		s_opts {
+	t_wtime			time_field;
 	bool			list_recurse:1;
 	bool			list_long:1;
 	bool			include_dot:1;
 	bool			sort_rev:1;
 	bool			no_sort:1;
-	bool			use_modtime:1;
-	bool			use_inodetime:1;
-	bool			use_atime:1;
-	bool			use_birthtime:1;
 	bool			numeric_uids:1; // -n
 	bool			list_full_time:1;
 }					t_opts;
@@ -65,6 +72,8 @@ typedef struct		s_ftype_info {
 	mode_t			mask;
 	char			chr;
 }					t_ftype_info;
+
+time_t				select_time(t_opts opts, t_dirent *e);
 
 char				*render_mode(t_dirent *e);
 char				*render_uid(t_opts opts, t_dirent *e);
