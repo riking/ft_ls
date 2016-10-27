@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/24 16:12:16 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 14:29:53 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,19 @@
 # include <sys/types.h>
 # include <stdbool.h>
 
+# define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
+
+# define GFAIL(val, expr) (void)(expr); return (val);
+# define ASGUARD(f, v, ...) ({int _r=ft_asprintf(v, __VA_ARGS__);if (_r<0){f}})
+# define ZGUARD(fail, expr) if ((expr) != 0) { fail }
+# define NGUARD(fail, expr) if ((expr) == NULL) { fail }
+
 typedef struct		s_dirent {
 	struct stat		stat;
 	char			*name;
 	char			*fullpath;
+	t_array			print;
+	t_array			printlen;
 }					t_dirent;
 
 typedef struct		s_dir_content {
@@ -34,5 +43,35 @@ typedef struct		s_dir_content {
 t_dir_content		*ft_read_dir(char *path);
 void				free_dir(t_dir_content *content);
 void				free_dirent(void *ptr, size_t size);
+void				free_string(void *ptr, size_t size);
+
+typedef struct		s_opts {
+	bool			list_recurse:1;
+	bool			list_long:1;
+	bool			include_dot:1;
+	bool			sort_rev:1;
+	bool			no_sort:1;
+	bool			use_modtime:1;
+	bool			use_inodetime:1;
+	bool			use_atime:1;
+	bool			use_birthtime:1;
+	bool			numeric_uids:1; // -n
+	bool			list_full_time:1;
+}					t_opts;
+
+typedef struct		s_ftype_info {
+	mode_t			mask;
+	char			chr;
+}					t_ftype_info;
+
+char				*render_mode(t_opts opts, t_dirent *e);
+char				*render_uid(t_opts opts, t_dirent *e);
+char				*render_gid(t_opts opts, t_dirent *e);
+char				*render_size(t_opts opts, t_dirent *e);
+char				*render_time(t_opts opts, t_dirent *e);
+char				*render_name(t_opts opts, t_dirent *e);
+
+char				*render_name(t_opts opts, t_dirent *e);
+int					render_dirent(t_opts opts, t_dirent *e);
 
 #endif

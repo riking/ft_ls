@@ -6,13 +6,15 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/10/24 16:56:18 by kyork            ###   ########.fr        #
+#    Updated: 2016/10/27 14:43:10 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ft_ls
 
 FILENAMES	+= ft_read_dir.c main.c free_struct.c
+FILENAMES	+= render.c
+FILENAMES	+= strmode.c
 
 OBJS		= $(addprefix build/, $(FILENAMES:.c=.o))
 LIBS		= libft/libft.a libft/libftprintf.a

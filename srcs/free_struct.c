@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 16:33:46 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/24 17:01:24 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 12:48:30 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,14 @@ void	free_dir(t_dir_content *content)
 	ft_ary_destroy(&content->entries);
 	free(content->fullpath);
 	free(content);
+}
+
+void	free_string(void *ptr, size_t size)
+{
+	char	**strp;
+
+	if (size != sizeof(char*))
+		exit(3);
+	strp = (char**)ptr;
+	free(*strp);
 }
