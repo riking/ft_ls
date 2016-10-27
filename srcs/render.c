@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:40 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 14:42:34 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 14:56:24 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int			long_part1(t_opts opts, t_dirent *e)
 {
 	char	*s;
 
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_mode(opts, e));
+	NGUARD(GFAIL(1, cleanup(0, e)), s = render_mode(e));
 	ARY_ADD(&e->print, s);
 	ASGUARD(GFAIL(1, cleanup(0, e)), &s, "%d", e->stat.st_nlink);
 	ARY_ADD(&e->print, s);
@@ -45,7 +45,7 @@ static int			long_part1(t_opts opts, t_dirent *e)
 	ARY_ADD(&e->print, s);
 	NGUARD(GFAIL(1, cleanup(0, e)), s = render_gid(opts, e));
 	ARY_ADD(&e->print, s);
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_size(opts, e));
+	NGUARD(GFAIL(1, cleanup(0, e)), s = render_size(e));
 	ARY_ADD(&e->print, s);
 	NGUARD(GFAIL(1, cleanup(0, e)), s = render_time(opts, e));
 	ARY_ADD(&e->print, s);
@@ -59,7 +59,8 @@ char				*render_name(t_opts opts, t_dirent *e)
 	ssize_t	bufsiz;
 	ssize_t	ret;
 
-	if ((e->stat.st_mode & S_IFLNK) == S_IFLNK)
+	(void)opts;
+	if (IS_TYPE(e, S_IFLNK))
 	{
 		bufsiz = 32;
 		ret = 999;

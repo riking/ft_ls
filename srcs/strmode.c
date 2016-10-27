@@ -6,11 +6,13 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 13:59:28 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 14:01:45 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 14:56:14 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+#include <ft_printf.h>
+
 #include <sys/xattr.h>
 #include <sys/acl.h>
 
@@ -43,7 +45,7 @@ static bool			get_acl(t_dirent *e)
 	return (had_acl);
 }
 
-char				*ft_astrmode(t_dirent *e)
+char				*render_mode(t_dirent *e)
 {
 	char	buf[12];
 	ssize_t	i;
@@ -52,7 +54,7 @@ char				*ft_astrmode(t_dirent *e)
 	i = 0;
 	buf[0] = g_ftype_info[0].chr;
 	while (++i < ARRAYLEN(g_ftype_info))
-		if ((e->stat.st_mode & S_IFMT) == g_ftype_info[i].mask)
+		if (IS_TYPE(e, g_ftype_info[i].mask))
 			buf[0] = g_ftype_info[i].chr;
 	i = -1;
 	while (++i < 9)
@@ -72,3 +74,17 @@ char				*ft_astrmode(t_dirent *e)
 	return (ft_strdup(buf));
 }
 
+char				*render_size(t_dirent *e)
+{
+	dev_t	minor;
+	dev_t	major;
+	char	*s;
+
+	if (IS_TYPE(e, S_IFCHR) || IS_TYPE(e, S_IFBLK))
+	{
+		minor = e->stat.st_dev & 0x00FFFFFF;
+		major = (e->stat.st_dev & 0xFF000000) >> 24;
+		ft_asprintf(&s, "%3d, %3d", major, minor);
+	}
+	return (NULL);
+}

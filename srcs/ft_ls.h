@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 14:29:53 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 14:56:08 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # define ASGUARD(f, v, ...) ({int _r=ft_asprintf(v, __VA_ARGS__);if (_r<0){f}})
 # define ZGUARD(fail, expr) if ((expr) != 0) { fail }
 # define NGUARD(fail, expr) if ((expr) == NULL) { fail }
+
+# define IS_TYPE(ent, type) ((e->stat.st_mode & S_IFMT) == (type))
 
 typedef struct		s_dirent {
 	struct stat		stat;
@@ -64,10 +66,10 @@ typedef struct		s_ftype_info {
 	char			chr;
 }					t_ftype_info;
 
-char				*render_mode(t_opts opts, t_dirent *e);
+char				*render_mode(t_dirent *e);
 char				*render_uid(t_opts opts, t_dirent *e);
 char				*render_gid(t_opts opts, t_dirent *e);
-char				*render_size(t_opts opts, t_dirent *e);
+char				*render_size(t_dirent *e);
 char				*render_time(t_opts opts, t_dirent *e);
 char				*render_name(t_opts opts, t_dirent *e);
 
