@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/24 17:01:10 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 19:12:46 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,17 @@ t_dir_content	*ft_read_dir(char *path)
 	DIR				*dir;
 
 	dir = opendir(path);
-	if (!dir)
-		return (NULL);
+	NGUARD(GFAIL(NULL, (void)0), dir);
 	result = new_dir(path);
-	if (!result)
-		return (NULL);
+	NGUARD(GFAIL(NULL, closedir(dir)), result);
+	ZGUARD(GFAIL(NULL, (closedir(dir), free_dir(result))),
+			lstat(path, &result->self));
 	while ((dp = readdir(dir)) != NULL)
 	{
 		if (!ft_stat(result, dp->d_namlen, dp->d_name))
 		{
 			free_dir(result);
+			closedir(dir);
 			return (NULL);
 		}
 	}

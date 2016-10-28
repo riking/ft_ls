@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 15:29:35 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 19:21:53 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
 
-# define GFAIL(val, expr) (void)(expr); return (val);
+# define GFAIL(val, expr) (void)(expr); ft_dprintf(2, "error on %s:%d\n", __FILE__, __LINE__); return (val);
 # define ASGUARD(f, v, ...) ({int _r=ft_asprintf(v, __VA_ARGS__);if (_r<0){f}})
 # define ZGUARD(fail, expr) if ((expr) != 0) { fail }
 # define NGUARD(fail, expr) if ((expr) == NULL) { fail }
@@ -34,11 +34,10 @@ typedef struct		s_dirent {
 	struct stat		stat;
 	char			*name;
 	char			*fullpath;
-	t_array			print;
-	t_array			printlen;
 }					t_dirent;
 
 typedef struct		s_dir_content {
+	struct stat		self;
 	t_array			entries;
 	char			*fullpath;
 }					t_dir_content;
@@ -73,6 +72,14 @@ typedef struct		s_ftype_info {
 	char			chr;
 }					t_ftype_info;
 
+typedef int			(*t_dirent_sorter)(t_opts opts,
+						t_dirent *left, t_dirent *right);
+
+typedef struct		s_sort_info {
+	t_dirent_sorter	func;
+	t_opts			opts;
+}					t_sort_info;
+
 time_t				select_time(t_opts opts, t_dirent *e);
 
 char				*render_mode(t_dirent *e);
@@ -83,6 +90,18 @@ char				*render_time(t_opts opts, t_dirent *e);
 char				*render_name(t_opts opts, t_dirent *e);
 
 char				*render_name(t_opts opts, t_dirent *e);
-int					render_dirent(t_opts opts, t_dirent *e);
+t_array				render_dirent(t_opts opts, t_dirent *e);
+
+/*
+** table: t_array<t_array<char *>>
+*/
+
+int					print_table(t_opts opts, t_array *table);
+
+size_t				calc_total(t_dir_content *d);
+
+int					sort_main(void *left, void *right, size_t size, void *data);
+int					sort_name(t_opts opts, t_dirent *a, t_dirent *b);
+int					sort_time(t_opts opts, t_dirent *a, t_dirent *b);
 
 #endif

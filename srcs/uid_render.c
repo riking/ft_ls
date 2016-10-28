@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 15:15:45 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 15:39:16 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 19:06:47 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char		*render_uid(t_opts opts, t_dirent *e)
 	if (!opts.numeric_uids)
 		p = getpwuid(e->stat.st_uid);
 	if (p != NULL)
-		ASGUARD(GFAIL(NULL, (void)0), &s, "%s", p->pw_name);
+		ASGUARD(GFAIL(NULL, (void)0), &s, "%s ", p->pw_name);
 	else
 		ASGUARD(GFAIL(NULL, (void)0), &s, "%d", e->stat.st_uid);
 	return (s);
@@ -44,7 +44,7 @@ char		*render_gid(t_opts opts, t_dirent *e)
 	if (!opts.numeric_uids)
 		g = getgrgid(e->stat.st_gid);
 	if (g != NULL)
-		ASGUARD(GFAIL(NULL, (void)0), &s, "%s", g->gr_name);
+		ASGUARD(GFAIL(NULL, (void)0), &s, "%s ", g->gr_name);
 	else
 		ASGUARD(GFAIL(NULL, (void)0), &s, "%d", e->stat.st_gid);
 	return (s);
@@ -83,7 +83,7 @@ char		*render_time(t_opts opts, t_dirent *e)
 	ct = ctime(&filetime);
 	if (opts.list_full_time)
 		ASGUARD(GFAIL(NULL, (void)0), &s, "%.20s", ct + 4);
-	else if (filetime + SIX_MONTHS > now || filetime < now + SIX_MONTHS)
+	else if (filetime + SIX_MONTHS > now && filetime < now + SIX_MONTHS)
 		ASGUARD(GFAIL(NULL, (void)0), &s, "%.7s%.5s", ct + 4, ct + 11);
 	else
 		ASGUARD(GFAIL(NULL, (void)0), &s, "%.7s%.5s", ct + 4, ct + 19);

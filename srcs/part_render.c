@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 13:59:28 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 15:15:04 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 18:19:05 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char				*render_mode(t_dirent *e)
 			buf[0] = g_ftype_info[i].chr;
 	i = -1;
 	while (++i < 9)
-		buf[i] = (e->stat.st_mode & (1 << (9 - i))) ? "rwxrwxrwx"[i] : '-';
+		buf[i + 1] = (e->stat.st_mode & (1 << (8 - i))) ? "rwxrwxrwx"[i] : '-';
 	if (e->stat.st_mode & S_ISUID)
 		buf[3] = (e->stat.st_mode & (0100)) != 0 ? 's' : 'S';
 	if (e->stat.st_mode & S_ISGID)
@@ -90,5 +90,5 @@ char				*render_size(t_dirent *e)
 	{
 		ASGUARD(GFAIL(NULL, (void)0), &s, "%lld", e->stat.st_size);
 	}
-	return (NULL);
+	return (s);
 }

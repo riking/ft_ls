@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:40 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 14:56:24 by kyork            ###   ########.fr       */
+/*   Updated: 2016/10/27 18:16:33 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define ARY_ADD(ary, s) ZGUARD({cleanup(s,e);return (-1);},ft_ary_append(ary,s))
-
-static void			cleanup(char *s, t_dirent *e)
-{
-	free(s);
-	ft_ary_foreach(&e->print, &free_string);
-}
+#define ARY_ADD(ary, s) ZGUARD({free(s); return (-1);}, ft_ary_append(ary, &s))
 
 /*
 ** guard macros:
@@ -33,22 +27,22 @@ static void			cleanup(char *s, t_dirent *e)
 ** GFAIL(retval, expr) - do expr, then return retval
 */
 
-static int			long_part1(t_opts opts, t_dirent *e)
+static int			long_list(t_opts opts, t_array *ary, t_dirent *e)
 {
 	char	*s;
 
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_mode(e));
-	ARY_ADD(&e->print, s);
-	ASGUARD(GFAIL(1, cleanup(0, e)), &s, "%d", e->stat.st_nlink);
-	ARY_ADD(&e->print, s);
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_uid(opts, e));
-	ARY_ADD(&e->print, s);
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_gid(opts, e));
-	ARY_ADD(&e->print, s);
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_size(e));
-	ARY_ADD(&e->print, s);
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_time(opts, e));
-	ARY_ADD(&e->print, s);
+	NGUARD(GFAIL(1, (void)0), s = render_mode(e));
+	ARY_ADD(ary, s);
+	ASGUARD(GFAIL(1, (void)0), &s, "%d", e->stat.st_nlink);
+	ARY_ADD(ary, s);
+	NGUARD(GFAIL(1, (void)0), s = render_uid(opts, e));
+	ARY_ADD(ary, s);
+	NGUARD(GFAIL(1, (void)0), s = render_gid(opts, e));
+	ARY_ADD(ary, s);
+	NGUARD(GFAIL(1, (void)0), s = render_size(e));
+	ARY_ADD(ary, s);
+	NGUARD(GFAIL(1, (void)0), s = render_time(opts, e));
+	ARY_ADD(ary, s);
 	return (0);
 }
 
@@ -80,18 +74,28 @@ char				*render_name(t_opts opts, t_dirent *e)
 	return (s);
 }
 
-int					render_dirent(t_opts opts, t_dirent *e)
+static void			cleanup(void *freeme, t_array *ary)
+{
+	free(freeme);
+	ft_ary_foreach(ary, &free_string);
+	ft_ary_destroy(ary);
+}
+
+t_array				render_dirent(t_opts opts, t_dirent *e)
 {
 	char	*s;
+	t_array	ary;
 
-	e->print = ft_ary_create(sizeof(char *));
-	if (!e->print.ptr)
-		return (1);
+	ary = ft_ary_create(sizeof(char*));
+	NGUARD(GFAIL(FT_ARY_NULL, cleanup(0, &ary)), ary.ptr);
 	if (opts.list_long)
 	{
-		ZGUARD(GFAIL(1, cleanup(0, e)), long_part1(opts, e));
+		if (0 != long_list(opts, &ary, e))
+		{
+			GFAIL(FT_ARY_NULL, cleanup(0, &ary));
+		}
 	}
-	NGUARD(GFAIL(1, cleanup(0, e)), s = render_name(opts, e));
-	ARY_ADD(&e->print, s);
-	return (0);
+	NGUARD(GFAIL(FT_ARY_NULL, cleanup(0, &ary)), s = render_name(opts, e));
+	ZGUARD(GFAIL(FT_ARY_NULL, cleanup(s, &ary)), ft_ary_append(&ary, &s));
+	return (ary);
 }
