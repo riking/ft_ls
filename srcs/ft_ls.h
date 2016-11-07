@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 19:21:53 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/06 16:03:33 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,21 @@ typedef struct		s_dirent {
 	char			*fullpath;
 }					t_dirent;
 
+/*
+** entries: t_array<t_dirent>
+*/
 typedef struct		s_dir_content {
 	struct stat		self;
 	t_array			entries;
 	char			*fullpath;
 }					t_dir_content;
 
-t_dir_content		*ft_read_dir(char *path);
+typedef enum		e_la_type {
+	LIST_NORMAL,
+	LIST_ALL,
+}					t_la_type;
+
+t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
 void				free_dir(t_dir_content *content);
 void				free_dirent(void *ptr, size_t size);
 void				free_string(void *ptr, size_t size);

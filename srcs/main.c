@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 19:22:19 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/06 16:03:59 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int			main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft_bzero(&opts, sizeof(opts));
-	dir = ft_read_dir(".");
+	dir = ft_read_dir(".", LIST_NORMAL);
 	opts.list_long = true;
 
 	sortinfo.func = &sort_name;

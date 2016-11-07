@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 19:17:06 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 19:24:08 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/06 16:09:05 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ size_t		calc_total(t_dir_content *d)
 {
 	size_t		idx;
 	off_t		size;
+	off_t		blks;
 	t_dirent	*e;
 
-	//size = CEILDIV(d->self.st_size, 512);
-	size = d->self.st_blocks;
+	size = 0;
 	idx = 0;
 	while (idx < d->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&d->entries, idx);
-		//size += CEILDIV(e->stat.st_size, 512);
-		size += e->stat.st_blocks;
+		blks = e->stat.st_blocks;
+		size += blks;
 		idx++;
 	}
 	return (size);

@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 19:12:46 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/06 16:03:42 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static bool		ft_stat(t_dir_content *r, int len, char *name)
 	return (true);
 }
 
-t_dir_content	*ft_read_dir(char *path)
+t_dir_content	*ft_read_dir(char *path, t_la_type la)
 {
 	t_dir_content	*result;
 	struct dirent	*dp;
@@ -75,6 +75,8 @@ t_dir_content	*ft_read_dir(char *path)
 			lstat(path, &result->self));
 	while ((dp = readdir(dir)) != NULL)
 	{
+		if (dp->d_name[0] == '.' && la == LIST_NORMAL)
+			continue ;
 		if (!ft_stat(result, dp->d_namlen, dp->d_name))
 		{
 			free_dir(result);
