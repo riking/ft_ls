@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 18:47:29 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 19:00:00 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/06 16:45:16 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ int		sort_main(void *left, void *right, size_t size, void *data)
 	if (size != sizeof(t_dirent))
 		exit(3);
 	info = data;
-	if (info->opts.no_sort)
-		return (0);
-	else if (info->opts.sort_rev)
+	if (info->opts.sort_rev)
 		return (-info->func(info->opts, left, right));
 	else
 		return (info->func(info->opts, left, right));

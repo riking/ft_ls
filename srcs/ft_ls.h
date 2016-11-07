@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/06 16:03:33 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/06 16:44:09 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct		s_dir_content {
 
 typedef enum		e_la_type {
 	LIST_NORMAL,
+	LIST_HIDDEN,
 	LIST_ALL,
 }					t_la_type;
 
@@ -64,16 +65,34 @@ typedef enum		e_wtime {
 
 #define TIME_DEFAULT TIME_M
 
+#define OPT_LIST_LONG (1 << 0)
+#define OPT_LIST_RECU (1 << 1)
+#define OPT_SORT_REV  (1 << 2)
+#define OPT_SORT_TIME (1 << 4)
+#define OPT_NUM_UIDS  (1 << 5)
+#define OPT_FULL_TIME (1 << 6)
+#define OPT_LIST_ALL  (1 << 7)
+#define OPT_LIST_HIDN (1 << 8)
+
 typedef struct		s_opts {
+	char			bad_opt;
 	t_wtime			time_field;
+	t_la_type		all_type;
 	bool			list_recurse:1;
 	bool			list_long:1;
-	bool			include_dot:1;
 	bool			sort_rev:1;
-	bool			no_sort:1;
-	bool			numeric_uids:1; // -n
+	bool			sort_time:1;
+	bool			numeric_uids:1;
 	bool			list_full_time:1;
+
 }					t_opts;
+
+typedef struct 		s_option {
+	char			chr;
+	short			bit;
+}					t_option;
+
+t_opts				parse_opts(char **argv);
 
 typedef struct		s_ftype_info {
 	mode_t			mask;
