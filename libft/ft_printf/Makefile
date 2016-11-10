@@ -6,7 +6,7 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/10/21 21:53:24 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 12:14:24 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ FILENAMES	+= parse_fmt.c parse_numflag.c
 FILENAMES	+= out_chr.c out_dec.c out_base.c out_pct.c
 FILENAMES	+= dprintf.c snprintf.c asprintf.c
 
-OBJS		= $(addprefix build/, $(FILENAMES:.c=.o))
+OBJS		= $(addprefix build/ft_printf_, $(FILENAMES:.c=.o))
 
 CFLAGS		+= -Wall -Wextra -Wmissing-prototypes
 #CFLAGS		= -Wall -Wextra -Wfloat-equal -Wundef -Wint-to-pointer-cast -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wcast-qual -Wmissing-prototypes -Wstrict-overflow=5 -Wwrite-strings -Wconversion --pedantic-errors
@@ -37,19 +37,22 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
+	@printf "\e[32m\e[1m[OK]\e[m $$(basename $@)\n"
 
 clean:
 	rm -rf build
+	@printf "\e[33m\e[1m[CLEAN]\e[m $$(basename $$(pwd))\n"
 
 fclean: clean
 	rm -f $(NAME)
+	@printf "\e[33m\e[1m[FCLEAN]\e[m $$(basename $$(pwd))\n"
 
 re: fclean all
 
 build:
 	mkdir -p build
 
-build/%.o: srcs/%.c srcs/*.h | build
+build/ft_printf_%.o: srcs/%.c srcs/*.h | build
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 smalltest: tests/small_test.c $(NAME) | build

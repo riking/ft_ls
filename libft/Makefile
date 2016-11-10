@@ -6,7 +6,7 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/08/22 09:02:39 by kyork             #+#    #+#              #
-#    Updated: 2016/10/27 15:48:56 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 12:13:39 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,7 +109,7 @@ else
 endif
 
 SRCS	= $(FILENAMES)
-OBJS	= $(addprefix build/, $(FILENAMES:.c=.o))
+OBJS	= $(addprefix build/libft_, $(FILENAMES:.c=.o))
 
 TESTTARGETS	= $(addprefix test-, $(TESTS2))
 TESTBINS	= $(addprefix build/, $(TESTTARGETS))
@@ -126,35 +126,52 @@ clean:
 	rm -rf build/
 	rm -f $(TESTBINS)
 	make -C ft_printf clean
+	@printf "\e[33m\e[1m[CLEAN]\e[m $$(basename $$(pwd))\n"
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f 
+	rm -f libftfuncs.a
+	rm -f libftprintf.a
 	make -C ft_printf fclean
+	@printf "\e[33m\e[1m[FCLEAN]\e[m $$(basename $$(pwd))\n"
 
 build:
 	mkdir build/
 
 ####
 # Libraries
-$(NAME): $(OBJS)
-	ar rcs $@ $^
+$(NAME): libftfuncs.a libftprintf.a
+	libtool -static -o $@ $^
+	@printf "\e[32m\e[1m[OK]\e[m $$(basename $@)\n"
 
-libftprintf.a:
-	make -C ft_printf libftprintf.a
+libftfuncs.a: $(OBJS)
+	ar rcs $@ $(OBJS)
+	@printf "\e[32m\e[1m[OK]\e[m $$(basename $@)\n"
+
+libftprintf.a: ft_printf/libftprintf.a
 	ln -f -s ft_printf/libftprintf.a
+
+ft_printf/libftprintf.a:
+	make -C ft_printf libftprintf.a
 
 ####
 # Install
 install: all
 	mkdir -p $(PREFIX)/lib
-	ln -f -s $(NAME) $(PREFIX)/lib/$(NAME)
-	ln -f -s libftprintf.a $(PREFIX)/lib/libftprintf.a
+	ln -f $(NAME) $(PREFIX)/lib/$(NAME)
 	mkdir -p $(PREFIX)/include
-	ln -f -s includes/libft.h $(PREFIX)/include/libft.h
-	ln -f -s includes/ft_printf.h $(PREFIX)/include/ft_printf.h
+	ln -f includes/libft.h $(PREFIX)/include/libft.h
+	ln -f includes/ft_printf.h $(PREFIX)/include/ft_printf.h
 
-build/%.o: %.c libft.h | build
+install_clean:
+	rm -f $(PREFIX)/lib/$(NAME)
+	rm -f $(PREFIX)/include/libft.h
+	rm -f $(PREFIX)/include/ft_printf.h
+
+build/libft_%.o: %.c libft.h | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build/test_%.o: tests/test_%.c libft.h | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
 test: $(TESTBINS)
@@ -172,10 +189,10 @@ build/test-%: build/test_%.o libft.a | build
 
 # Without ASan
 
-build/ft_strcmp.o: ft_strcmp.c libft.h | build
+build/libft_ft_strcmp.o: ft_strcmp.c libft.h | build
 	$(CC) $(filter-out -fsanitize=address,$(CFLAGS)) -c $< -o $@
 
-build/ft_strncmp.o: ft_strncmp.c libft.h | build
+build/libft_ft_strncmp.o: ft_strncmp.c libft.h | build
 	$(CC) $(filter-out -fsanitize=address,$(CFLAGS)) -c $< -o $@
 
 build/test_strcmp.o: test_strcmp.c libft.h | build
