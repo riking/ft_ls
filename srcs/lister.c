@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 14:30:48 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 19:45:48 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 22:10:42 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 	t_array		ary;
 	char		*line;
 
-	ary = ft_ary_create(sizeof(t_array));
+	ary = ft_ary_create(sizeof(char*));
 	NGUARD(GFAIL(0, ft_perror(NULL)), ary.ptr);
 	idx = 0;
 	while (idx < dir->entries.item_count)
@@ -77,8 +77,9 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 		ZGUARD(GFAIL(0, onerror(ary)), ft_ary_append(&ary, &line));
 		idx++;
 	}
+	opts.columns = opts.allow_columns;
 	print_columns(opts, &ary);
-	free_string_array_array(ary);
+	free_string_array(&ary, sizeof(ary));
 	if (opts.list_recurse)
 		recurse_list(opts, dir);
 	return (0);

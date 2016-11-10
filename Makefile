@@ -6,7 +6,7 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/11/09 20:35:54 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/09 21:56:40 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) -L libft -lft -lftprintf
+	printf "\e[32m\e[1m[OK]\e[m $(NAME)\n"
 
 install: $(NAME)
 	cp $(NAME) $(HOME)/bin/$(NAME)

@@ -6,13 +6,13 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 18:46:30 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 21:14:24 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 22:08:37 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-size_t			color_strlen(char *s)
+size_t				color_strlen(char *s)
 {
 	size_t	len;
 	char	*str;

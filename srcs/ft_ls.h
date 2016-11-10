@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 21:14:19 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 22:09:57 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
 
-# define GFAIL(val, expr) (void)(expr); ft_dprintf(2, "error on %s line %d\n", __FILE__, __LINE__); return (val);
+# define GFAIL(val, expr) (void)(expr); return (val);
 # define GCONT(expr) (void)expr; continue ;
 # define ASGUARD(f, v, ...) ({int _r=ft_asprintf(v, __VA_ARGS__);if (_r<0){f}})
 # define ZGUARD(fail, expr) if ((expr) != 0) { fail }
@@ -99,9 +99,11 @@ typedef struct		s_opts {
 	bool			sort_time:1;
 	bool			numeric_uids:1;
 	bool			list_full_time:1;
-	bool			skip_dirs:1;
+	bool			allow_columns:1;
 	bool			colors:1;
+
 	bool			columns:1;
+	bool			skip_dirs:1;
 	int				opt_count;
 }					t_opts;
 
@@ -148,6 +150,7 @@ typedef struct		s_filename_color {
 }					t_filename_color;
 
 # define STR_COL_RESET "\e[0m"
+
 const char			*get_color(t_opts opts, t_dirent *e);
 size_t				color_strlen(char *s);
 
@@ -161,7 +164,7 @@ int					print_table(t_opts opts, t_array *table);
 ** return: t_array<int>
 ** return[i] is the widest string of table[...][i]
 */
-//t_array				align_table(t_array *table);
+t_array				align_table(t_array *table);
 
 /*
 ** namelist: t_array<char*>

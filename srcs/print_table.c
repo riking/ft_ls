@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 16:17:24 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 21:27:26 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 21:48:46 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ bool			g_any_output;
 ** ft_ary_get returns an unfreeable *T valid until array is modified
 */
 
-static t_array	align_table(t_array *table)
+t_array			align_table(t_array *table)
 {
 	t_array	widths;
 	t_array	*line;

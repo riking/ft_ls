@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 21:44:07 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 22:12:24 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,9 @@ t_opts				parse_opts(char **argv)
 	int		i;
 	short	flags;
 
-	ret = (t_opts){0,0,0,0,0,0,0,0,0,0,0,0,0};
+	ft_bzero(&ret, sizeof(ret));
 	ret.colors = !!isatty(1);
+	ret.allow_columns = !!isatty(1);
 	ret.time_field = TIME_DEFAULT;
 	flags = 0;
 	while (*++argv)

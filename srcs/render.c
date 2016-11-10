@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:40 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 19:35:41 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 22:08:01 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define ARY_ADD(ary, s) ZGUARD({free(s); ft_dprintf(2, "zguard on line %d", __LINE__); return (1);}, ft_ary_append(ary, &s))
+#define ARY_ADD(ary, s) ZGUARD({free(s); return (1);}, ft_ary_append(ary, &s))
 
 /*
 ** guard macros:
