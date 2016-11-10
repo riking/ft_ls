@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 22:09:57 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 13:54:49 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # define IS_TYPE(ent, type) (((ent)->stat.st_mode & S_IFMT) == (type))
 
 extern bool			g_any_output;
+extern const char	*g_usage;
 
 typedef struct		s_dirent {
 	struct stat		stat;
@@ -54,8 +55,6 @@ typedef enum		e_la_type {
 	LIST_ALL,
 }					t_la_type;
 
-t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
-t_dir_content		*stat_argv(char *argv[], t_dir_content **dirs);
 void				free_dir(t_dir_content *content);
 void				free_dirent(void *ptr, size_t size);
 void				free_string(void *ptr, size_t size);
@@ -82,12 +81,16 @@ typedef enum		e_wtime {
 # define OPT_LIST_LONG (1 << 0)
 # define OPT_LIST_RECU (1 << 1)
 # define OPT_SORT_REV  (1 << 2)
+# define OPT_SORT_NONE (1 << 3)
 # define OPT_SORT_TIME (1 << 4)
 # define OPT_NUM_UIDS  (1 << 5)
 # define OPT_FULL_TIME (1 << 6)
 # define OPT_LIST_ALL  (1 << 7)
 # define OPT_LIST_HIDN (1 << 8)
 # define OPT_FORCE_COLOR (1 << 9)
+# define OPT_ARGV_NOFOLLOW (1 << 10)
+# define OPT_NO_DIRS   (1 << 11)
+# define OPT_NO_COLUMNS (1 << 12)
 
 typedef struct		s_opts {
 	char			bad_opt;
@@ -95,17 +98,24 @@ typedef struct		s_opts {
 	t_la_type		all_type;
 	bool			list_recurse:1;
 	bool			list_long:1;
+	bool			sort_none:1;
 	bool			sort_rev:1;
 	bool			sort_time:1;
 	bool			numeric_uids:1;
 	bool			list_full_time:1;
 	bool			allow_columns:1;
 	bool			colors:1;
+	bool			argv_nofollow:1;
+	bool			no_dirs:1;
 
 	bool			columns:1;
-	bool			skip_dirs:1;
+	bool			no_total:1;
 	int				opt_count;
 }					t_opts;
+
+t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
+char				*as_readlink(char *path);
+t_dir_content		*stat_argv(t_opts opts, char *argv[], t_dir_content **dirs);
 
 typedef struct		s_option {
 	char			chr;
@@ -181,7 +191,7 @@ int					sort_time(t_opts opts, t_dirent *a, t_dirent *b);
 
 int					long_list_dir(t_opts opts, t_dir_content *d);
 int					short_list_dir(t_opts opts, t_dir_content *d);
-void				header_list(t_opts opts, char *fullpath);
+void				header_list(t_opts opts, char *fullpath, char *name);
 void				recurse_list(t_opts opts, t_dir_content *d);
 
 void				ft_perror(char *context);

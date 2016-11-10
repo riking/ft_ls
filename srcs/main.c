@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 21:57:14 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 13:58:16 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include <errno.h>
 #include <string.h>
 
+static char	*g_argv_dot[] = {"", ".", NULL};
+static int	g_rval;
+
 void		ft_perror(char *ctx)
 {
 	char	*errstr;
@@ -27,28 +30,31 @@ void		ft_perror(char *ctx)
 		ft_dprintf(2, "%s: %s: %s\n", ft_progname(), ctx, errstr);
 	else
 		ft_dprintf(2, "%s: %s\n", ft_progname(), errstr);
+	g_rval = 1;
 }
 
-static int	ls_one(t_opts opts, char *fname)
+static void	noheader_list(t_opts opts, char *fullpath, char *name)
 {
-	t_dir_content	*dir;
+	t_dir_content *d;
 
-	dir = ft_read_dir(fname, opts.all_type);
-	if (!dir)
+	d = ft_read_dir(fullpath, opts.all_type);
+	if (!d)
 	{
-		ft_perror(fname);
-		return (1);
+		ft_perror(name);
+		return ;
 	}
-	sort_directory(opts, dir);
-	if (opts.list_long)
-		long_list_dir(opts, dir);
-	else
-		short_list_dir(opts, dir);
-	free_dir(dir);
-	return (0);
+	if (d->entries.item_count != 0)
+	{
+		sort_directory(opts, d);
+		if (opts.list_long)
+			long_list_dir(opts, d);
+		else
+			short_list_dir(opts, d);
+	}
+	free_dir(d);
 }
 
-static void	list_argv_dirs(t_opts opts, t_dir_content *dir)
+static void	list_argv_dirs(t_opts opts, t_dir_content *dir, bool is_solo)
 {
 	size_t			idx;
 	t_dirent		*e;
@@ -57,32 +63,28 @@ static void	list_argv_dirs(t_opts opts, t_dir_content *dir)
 	while (++idx < dir->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
-		if (IS_TYPE(e, S_IFDIR))
-			header_list(opts, e->fullpath);
+		if (dir->entries.item_count == 1 && is_solo)
+			noheader_list(opts, e->fullpath, e->name);
+		else
+			header_list(opts, e->fullpath, e->name);
 	}
 }
 
-static int	ls_mult(t_opts opts, char **argv)
+static void	traverse_argv(t_opts opts, char *argv[])
 {
 	t_dir_content	*files;
 	t_dir_content	*dirs;
 
-	files = stat_argv(argv, &dirs);
-	if (!dirs || !files)
-	{
-		ft_perror("ls_mult");
-		return (1);
-	}
+	files = stat_argv(opts, argv, &dirs);
 	sort_directory(opts, files);
 	sort_directory(opts, dirs);
-	opts.skip_dirs = 1;
+	opts.no_total = 1;
 	if (opts.list_long)
 		long_list_dir(opts, files);
 	else
 		short_list_dir(opts, files);
-	opts.skip_dirs = 0;
-	list_argv_dirs(opts, dirs);
-	return (0);
+	opts.no_total = 0;
+	list_argv_dirs(opts, dirs, files->entries.item_count == 0);
 }
 
 int			main(int argc, char **argv)
@@ -101,12 +103,8 @@ int			main(int argc, char **argv)
 	argv += opts.opt_count;
 	argc -= opts.opt_count;
 	if (argc == 1)
-		return (ls_one(opts, "."));
-	else if (argc == 2)
-		return (ls_one(opts, argv[1]));
+		traverse_argv(opts, g_argv_dot);
 	else
-	{
-		return (ls_mult(opts, argv));
-	}
-	return (0);
+		traverse_argv(opts, argv);
+	return (g_rval);
 }

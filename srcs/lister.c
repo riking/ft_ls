@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 14:30:48 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 22:10:42 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 13:55:02 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int			long_list_dir(t_opts opts, t_dir_content *dir)
 	t_array		ary;
 	t_array		line;
 
-	if (opts.list_long && !opts.skip_dirs)
+	if (opts.list_long && !opts.no_total)
 		ft_printf("total %lu\n", calc_total(dir));
 	ary = ft_ary_create(sizeof(t_array));
 	NGUARD(GFAIL(0, ft_perror(NULL)), ary.ptr);
@@ -41,7 +41,6 @@ int			long_list_dir(t_opts opts, t_dir_content *dir)
 	while (idx < dir->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
-		ZGUARD(GCONT(idx++), opts.skip_dirs && IS_TYPE(e, S_IFDIR));
 		line = render_dirent(opts, e);
 		NGUARD(GFAIL(0, onerror(ary)), line.ptr);
 		ZGUARD(GFAIL(0, onerror(ary)), ft_ary_append(&ary, &line));
@@ -71,7 +70,6 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 	while (idx < dir->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
-		ZGUARD(GCONT(idx++), opts.skip_dirs && IS_TYPE(e, S_IFDIR));
 		line = render_name(opts, e);
 		NGUARD(GFAIL(0, onerror(ary)), line);
 		ZGUARD(GFAIL(0, onerror(ary)), ft_ary_append(&ary, &line));
@@ -85,7 +83,7 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 	return (0);
 }
 
-void		header_list(t_opts opts, char *fullpath)
+void		header_list(t_opts opts, char *fullpath, char *name)
 {
 	t_dir_content	*d;
 
@@ -94,7 +92,7 @@ void		header_list(t_opts opts, char *fullpath)
 	d = ft_read_dir(fullpath, opts.all_type);
 	if (!d)
 	{
-		ft_perror(fullpath);
+		ft_perror(name);
 		return ;
 	}
 	if (d->entries.item_count != 0)
@@ -120,7 +118,7 @@ void		recurse_list(t_opts opts, t_dir_content *dir)
 		if (IS_TYPE(e, S_IFDIR) && 0 != ft_strcmp(e->name, ".") &&
 				0 != ft_strcmp(e->name, ".."))
 		{
-			header_list(opts, e->fullpath);
+			header_list(opts, e->fullpath, e->name);
 		}
 		idx++;
 	}

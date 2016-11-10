@@ -6,15 +6,17 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 19:36:52 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 14:00:51 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 #include <libft.h>
 #include <ft_printf.h>
+
 #include <stdlib.h>
 #include <dirent.h>
+#include <errno.h>
 
 static t_dir_content	*new_dir(char *path)
 {
@@ -38,7 +40,24 @@ static t_dir_content	*new_dir(char *path)
 
 static struct stat		g_garbage_stat;
 
-static bool				ft_stat(t_dir_content *r, char *name)
+static int				folstat(char *fullpath, struct stat *st)
+{
+	int errnum;
+
+	if (0 != stat(fullpath, st))
+	{
+		errnum = errno;
+		if (0 == lstat(fullpath, st))
+		{
+			errno = 0;
+			return (0);
+		}
+		return (-1);
+	}
+	return (0);
+}
+
+static bool				ft_stat(t_dir_content *r, char *name, bool nofollow)
 {
 	t_dirent	ent;
 
@@ -52,8 +71,9 @@ static bool				ft_stat(t_dir_content *r, char *name)
 		free_dirent(&ent, sizeof(t_dirent));
 		return (false);
 	}
-	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))),
-			lstat(ent.fullpath, &ent.stat));
+	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))), nofollow ?
+			lstat(ent.fullpath, &ent.stat) :
+			folstat(ent.fullpath, &ent.stat));
 	ent.broken_link = (IS_TYPE(&ent, S_IFLNK)) ?
 		(0 != stat(ent.fullpath, &g_garbage_stat)) : false;
 	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))),
@@ -75,7 +95,7 @@ t_dir_content			*ft_read_dir(char *path, t_la_type la)
 	{
 		if (dp->d_name[0] == '.' && la == LIST_NORMAL)
 			continue ;
-		if (!ft_stat(result, dp->d_name))
+		if (!ft_stat(result, dp->d_name, false))
 		{
 			free_dir(result);
 			closedir(dir);
@@ -86,7 +106,7 @@ t_dir_content			*ft_read_dir(char *path, t_la_type la)
 	return (result);
 }
 
-t_dir_content			*stat_argv(char *argv[],
+t_dir_content			*stat_argv(t_opts opts, char *argv[],
 		t_dir_content **dirs)
 {
 	t_dir_content	*result;
@@ -98,7 +118,7 @@ t_dir_content			*stat_argv(char *argv[],
 	ac = 1;
 	while (argv[ac])
 	{
-		if (!ft_stat(result, argv[ac]))
+		if (!ft_stat(result, argv[ac], opts.argv_nofollow))
 		{
 			free_dir(result);
 			return (NULL);

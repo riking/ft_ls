@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 17:50:50 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 20:57:32 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 14:01:20 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static char		*as_readlink(t_dirent *e)
+char			*as_readlink(char *path)
 {
 	char	*l;
 	ssize_t	bufsiz;
@@ -32,7 +32,7 @@ static char		*as_readlink(t_dirent *e)
 		l = malloc(bufsiz);
 		if (!l)
 			return (NULL);
-		ret = readlink(e->fullpath, l, bufsiz - 1);
+		ret = readlink(path, l, bufsiz - 1);
 	}
 	if (ret == -1)
 	{
@@ -53,7 +53,7 @@ char			*render_name(t_opts opts, t_dirent *e)
 	c = get_color(opts, e);
 	if (opts.list_long && IS_TYPE(e, S_IFLNK))
 	{
-		l = as_readlink(e);
+		l = as_readlink(e->fullpath);
 		ft_asprintf(&s, "%s%s%s -> %s", c, e->name,
 				opts.colors ? STR_COL_RESET : "", l);
 		free(l);
