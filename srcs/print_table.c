@@ -6,13 +6,15 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 16:17:24 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 19:04:20 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:04:29 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 #include <ft_printf.h>
 #include <libft.h>
+
+bool			g_any_output;
 
 /*
 ** table:	t_array<t_array<char*>>
@@ -85,6 +87,7 @@ int				print_table(t_opts opts, t_array *table)
 						*(char**)ft_ary_get(line, idx[1]));
 			else
 				ft_printf("%s\n", *(char**)ft_ary_get(line, idx[1]));
+			g_any_output = true;
 			idx[1]++;
 		}
 		idx[0]++;

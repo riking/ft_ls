@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 16:21:47 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:15:34 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 
 # define IS_TYPE(ent, type) (((ent)->stat.st_mode & S_IFMT) == (type))
 
+extern bool			g_any_output;
+
 typedef struct		s_dirent {
 	struct stat		stat;
 	char			*name;
@@ -52,6 +54,7 @@ typedef enum		e_la_type {
 }					t_la_type;
 
 t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
+t_dir_content		*stat_argv(char *argv[], t_dir_content **dirs);
 void				free_dir(t_dir_content *content);
 void				free_dirent(void *ptr, size_t size);
 void				free_string(void *ptr, size_t size);
@@ -94,6 +97,7 @@ typedef struct		s_opts {
 	bool			sort_time:1;
 	bool			numeric_uids:1;
 	bool			list_full_time:1;
+	bool			skip_dirs:1;
 	int				opt_count;
 
 }					t_opts;
@@ -151,6 +155,7 @@ int					sort_time(t_opts opts, t_dirent *a, t_dirent *b);
 
 int					long_list_dir(t_opts opts, t_dir_content *d);
 int					short_list_dir(t_opts opts, t_dir_content *d);
+void				header_list(t_opts opts, char *fullpath);
 void				recurse_list(t_opts opts, t_dir_content *d);
 
 void				ft_perror(char *context);

@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 14:30:48 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 16:13:13 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:08:38 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,15 @@ int			long_list_dir(t_opts opts, t_dir_content *dir)
 	t_array		ary;
 	t_array		line;
 
-	ft_printf("total %lu\n", calc_total(dir));
+	if (opts.list_long && !opts.skip_dirs)
+		ft_printf("total %lu\n", calc_total(dir));
 	ary = ft_ary_create(sizeof(t_array));
 	NGUARD(GFAIL(0, ft_perror(NULL)), ary.ptr);
 	idx = 0;
 	while (idx < dir->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
+		ZGUARD(GCONT(idx++), opts.skip_dirs && IS_TYPE(e, S_IFDIR));
 		line = render_dirent(opts, e);
 		NGUARD(GFAIL(0, onerror(ary)), line.ptr);
 		ZGUARD(GFAIL(0, onerror(ary)), ft_ary_append(&ary, &line));
@@ -65,6 +67,7 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 	while (idx < dir->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
+		ZGUARD(GCONT(idx++), opts.skip_dirs && IS_TYPE(e, S_IFDIR));
 		line = render_dirent(opts, e);
 		NGUARD(GFAIL(0, onerror(ary)), line.ptr);
 		ZGUARD(GFAIL(0, onerror(ary)), ft_ary_append(&ary, &line));
@@ -77,11 +80,12 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 	return (0);
 }
 
-static void	header_list(t_opts opts, char *fullpath)
+void		header_list(t_opts opts, char *fullpath)
 {
 	t_dir_content	*d;
 
-	ft_printf("\n%s:\n", fullpath);
+	ft_printf("%s%s:\n", g_any_output ? "\n" : "", fullpath);
+	g_any_output = true;
 	d = ft_read_dir(fullpath, opts.all_type);
 	if (!d)
 	{
