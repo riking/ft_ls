@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:40 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:38:16 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 19:35:41 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define ARY_ADD(ary, s) ZGUARD({free(s); return (-1);}, ft_ary_append(ary, &s))
+#define ARY_ADD(ary, s) ZGUARD({free(s); ft_dprintf(2, "zguard on line %d", __LINE__); return (1);}, ft_ary_append(ary, &s))
 
 /*
 ** guard macros:
@@ -44,34 +44,6 @@ static int			long_list(t_opts opts, t_array *ary, t_dirent *e)
 	NGUARD(GFAIL(1, (void)0), s = render_time(opts, e));
 	ARY_ADD(ary, s);
 	return (0);
-}
-
-char				*render_name(t_opts opts, t_dirent *e)
-{
-	char	*s;
-	char	*l;
-	ssize_t	bufsiz;
-	ssize_t	ret;
-
-	if (opts.list_long && IS_TYPE(e, S_IFLNK))
-	{
-		bufsiz = 32;
-		ret = 999;
-		l = 0;
-		while (ret >= bufsiz - 2)
-		{
-			bufsiz *= 2;
-			free(l);
-			l = malloc(bufsiz);
-			ret = readlink(e->fullpath, l, bufsiz - 1);
-		}
-		l[ret] = 0;
-		ft_asprintf(&s, "%s -> %s", e->name, l);
-		free(l);
-		return (s);
-	}
-	ASGUARD(GFAIL(NULL, (void)0), &s, "%s", e->name);
-	return (s);
 }
 
 static void			cleanup(void *freeme, t_array *ary)

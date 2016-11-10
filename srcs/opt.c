@@ -6,12 +6,13 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 16:18:49 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:48:52 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 #include <libft.h>
+#include <unistd.h>
 
 static t_option		g_options[] = {
 	{'l', OPT_LIST_LONG},
@@ -72,6 +73,8 @@ static void			bits_to_fields(short bits, t_opts *opts)
 		opts->all_type = LIST_HIDDEN;
 	if (bits & OPT_LIST_ALL)
 		opts->all_type = LIST_ALL;
+	if (bits & OPT_FORCE_COLOR)
+		opts->colors = 1;
 }
 
 t_opts				parse_opts(char **argv)
@@ -81,6 +84,7 @@ t_opts				parse_opts(char **argv)
 	short	flags;
 
 	ft_bzero(&ret, sizeof(ret));
+	ret.colors = !!isatty(1);
 	ret.time_field = TIME_DEFAULT;
 	while (*++argv)
 		if (**argv == '-')

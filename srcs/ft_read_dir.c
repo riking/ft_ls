@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:28:47 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 19:36:52 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ static t_dir_content	*new_dir(char *path)
 	return (result);
 }
 
+static struct stat		g_garbage_stat;
+
 static bool				ft_stat(t_dir_content *r, char *name)
 {
 	t_dirent	ent;
@@ -50,16 +52,12 @@ static bool				ft_stat(t_dir_content *r, char *name)
 		free_dirent(&ent, sizeof(t_dirent));
 		return (false);
 	}
-	if (0 != lstat(ent.fullpath, &ent.stat))
-	{
-		free_dirent(&ent, sizeof(t_dirent));
-		return (false);
-	}
-	if (0 != ft_ary_append(&(r->entries), &ent))
-	{
-		free_dirent(&ent, sizeof(t_dirent));
-		return (false);
-	}
+	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))),
+			lstat(ent.fullpath, &ent.stat));
+	ent.broken_link = (IS_TYPE(&ent, S_IFLNK)) ?
+		(0 != stat(ent.fullpath, &g_garbage_stat)) : false;
+	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))),
+			ft_ary_append(&(r->entries), &ent));
 	return (true);
 }
 

@@ -6,16 +6,16 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/11/09 16:03:41 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/09 20:35:54 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ft_ls
 
 FILENAMES	+= ft_read_dir.c main.c free_struct.c
-FILENAMES	+= render.c sorting.c
-FILENAMES	+= part_render.c uid_render.c
-FILENAMES	+= print_table.c blkcount.c
+FILENAMES	+= render.c colors.c sorting.c
+FILENAMES	+= part_render.c uid_render.c name_render.c
+FILENAMES	+= print_table.c blkcount.c columns.c
 FILENAMES	+= opt.c lister.c
 
 OBJS		= $(addprefix build/, $(FILENAMES:.c=.o))
@@ -42,6 +42,9 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) -L libft -lft -lftprintf
+
+install: $(NAME)
+	cp $(NAME) $(HOME)/bin/$(NAME)
 
 libft/libft.a:
 	make -C libft libft.a

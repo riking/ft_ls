@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 14:30:48 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:08:38 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 19:45:48 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,16 @@ int			long_list_dir(t_opts opts, t_dir_content *dir)
 	return (0);
 }
 
+/*
+** ary: t_array<char*>
+*/
+
 int			short_list_dir(t_opts opts, t_dir_content *dir)
 {
 	size_t		idx;
 	t_dirent	*e;
 	t_array		ary;
-	t_array		line;
+	char		*line;
 
 	ary = ft_ary_create(sizeof(t_array));
 	NGUARD(GFAIL(0, ft_perror(NULL)), ary.ptr);
@@ -68,12 +72,12 @@ int			short_list_dir(t_opts opts, t_dir_content *dir)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
 		ZGUARD(GCONT(idx++), opts.skip_dirs && IS_TYPE(e, S_IFDIR));
-		line = render_dirent(opts, e);
-		NGUARD(GFAIL(0, onerror(ary)), line.ptr);
+		line = render_name(opts, e);
+		NGUARD(GFAIL(0, onerror(ary)), line);
 		ZGUARD(GFAIL(0, onerror(ary)), ft_ary_append(&ary, &line));
 		idx++;
 	}
-	print_table(opts, &ary);
+	print_columns(opts, &ary);
 	free_string_array_array(ary);
 	if (opts.list_recurse)
 		recurse_list(opts, dir);

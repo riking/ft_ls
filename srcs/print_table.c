@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 16:17:24 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:35:37 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 21:27:26 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static t_array	align_table(t_array *table)
 		idx[1] = 0;
 		while (idx[1] < line->item_count)
 		{
-			width = ft_strlen(*(char**)ft_ary_get(line, idx[1]));
+			width = color_strlen(*(char**)ft_ary_get(line, idx[1]));
 			if (widths.item_count <= idx[1] ||
 					width > *(int*)ft_ary_get(&widths, idx[1]))
 				ft_ary_set(&widths, &width, idx[1]);
@@ -51,19 +51,23 @@ static t_array	align_table(t_array *table)
 	return (widths);
 }
 
-static void		change_widths(t_opts opts, t_array *table)
+static void		print_elem(t_opts opts, t_array *widths,
+					t_array *line, size_t idx)
 {
-	int		width;
+	char	*str;
+	int		cwidth;
 
-	if (opts.list_long)
+	str = *(char**)ft_ary_get(line, idx);
+	cwidth = *(int*)ft_ary_get(widths, idx);
+	if (idx == line->item_count - 1)
+		ft_printf("%s\n", str);
+	else if (opts.columns ||
+			(opts.list_long && (idx == 2 || idx == 3)))
 	{
-		width = *(int*)ft_ary_get(table, 2);
-		width = -width;
-		ft_ary_set(table, &width, 2);
-		width = *(int*)ft_ary_get(table, 3);
-		width = -width;
-		ft_ary_set(table, &width, 3);
+		ft_printf("%s%*s", str, (int)(cwidth - color_strlen(str) + 2), "");
 	}
+	else
+		ft_printf("%*s ", cwidth, str);
 }
 
 int				print_table(t_opts opts, t_array *table)
@@ -74,7 +78,6 @@ int				print_table(t_opts opts, t_array *table)
 
 	widths = align_table(table);
 	NGUARD(GFAIL(-1, (void)0), widths.ptr);
-	change_widths(opts, &widths);
 	idx[0] = -1;
 	while (++idx[0] < table->item_count)
 	{
@@ -82,11 +85,7 @@ int				print_table(t_opts opts, t_array *table)
 		idx[1] = -1;
 		while (++idx[1] < line->item_count)
 		{
-			if (idx[1] + 1 < line->item_count)
-				ft_printf("%*s ", *(int*)ft_ary_get(&widths, idx[1]),
-						*(char**)ft_ary_get(line, idx[1]));
-			else
-				ft_printf("%s\n", *(char**)ft_ary_get(line, idx[1]));
+			print_elem(opts, &widths, line, idx[1]);
 			g_any_output = true;
 		}
 	}

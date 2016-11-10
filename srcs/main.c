@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:18:51 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:47:18 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ int			main(int argc, char **argv)
 	opts = parse_opts(argv);
 	if (opts.bad_opt != '\0')
 	{
-		ft_dprintf(2, "%s: illegal option -- %c\n", ft_progname(), opts.bad_opt);
+		ft_dprintf(2, "%s: illegal option -- %c\n", ft_progname(),
+				opts.bad_opt);
 		ft_dprintf(2, "usage: %s [-RTUaclnrtu] [file ...]\n", ft_progname());
 		return (1);
 	}

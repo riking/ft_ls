@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:15:34 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 21:14:19 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
 
-# define GFAIL(val, expr) (void)(expr); return (val);
+# define GFAIL(val, expr) (void)(expr); ft_dprintf(2, "error on %s line %d\n", __FILE__, __LINE__); return (val);
 # define GCONT(expr) (void)expr; continue ;
 # define ASGUARD(f, v, ...) ({int _r=ft_asprintf(v, __VA_ARGS__);if (_r<0){f}})
 # define ZGUARD(fail, expr) if ((expr) != 0) { fail }
@@ -37,6 +37,7 @@ typedef struct		s_dirent {
 	struct stat		stat;
 	char			*name;
 	char			*fullpath;
+	bool			broken_link;
 }					t_dirent;
 
 /*
@@ -86,6 +87,7 @@ typedef enum		e_wtime {
 # define OPT_FULL_TIME (1 << 6)
 # define OPT_LIST_ALL  (1 << 7)
 # define OPT_LIST_HIDN (1 << 8)
+# define OPT_FORCE_COLOR (1 << 9)
 
 typedef struct		s_opts {
 	char			bad_opt;
@@ -98,8 +100,9 @@ typedef struct		s_opts {
 	bool			numeric_uids:1;
 	bool			list_full_time:1;
 	bool			skip_dirs:1;
+	bool			colors:1;
+	bool			columns:1;
 	int				opt_count;
-
 }					t_opts;
 
 typedef struct		s_option {
@@ -136,14 +139,34 @@ char				*render_size(t_dirent *e);
 char				*render_time(t_opts opts, t_dirent *e);
 char				*render_name(t_opts opts, t_dirent *e);
 
-char				*render_name(t_opts opts, t_dirent *e);
 t_array				render_dirent(t_opts opts, t_dirent *e);
+
+typedef struct		s_filename_color {
+	mode_t			type;
+	char			*name;
+	const char		*color;
+}					t_filename_color;
+
+# define STR_COL_RESET "\e[0m"
+const char			*get_color(t_opts opts, t_dirent *e);
+size_t				color_strlen(char *s);
 
 /*
 ** table: t_array<t_array<char *>>
 */
-
 int					print_table(t_opts opts, t_array *table);
+
+/*
+** table:  t_array<t_array<char*>>
+** return: t_array<int>
+** return[i] is the widest string of table[...][i]
+*/
+//t_array				align_table(t_array *table);
+
+/*
+** namelist: t_array<char*>
+*/
+int					print_columns(t_opts opts, t_array *namelist);
 
 size_t				calc_total(t_dir_content *d);
 
