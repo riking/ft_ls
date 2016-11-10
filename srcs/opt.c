@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 14:20:49 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 15:55:20 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static t_option		g_options[] = {
 	{'R', OPT_LIST_RECU},
 	{'a', OPT_LIST_ALL},
 	{'A', OPT_LIST_HIDN},
-	{'t', OPT_SORT_TIME},
 	{'n', OPT_NUM_UIDS | OPT_LIST_LONG},
 	{'T', OPT_FULL_TIME},
 	{'G', OPT_FORCE_COLOR},
@@ -37,10 +36,29 @@ static t_timeopt	g_time_opts[] = {
 	{'U', TIME_B},
 };
 
+#include <ft_printf.h>
+static bool			apply_special(char c, short *bits, t_opts *opts)
+{
+	(void)opts;
+	if (c == '1')
+	{
+		*bits |= OPT_NO_COLUMNS;
+		*bits &= ~OPT_LIST_LONG;
+		return (true);
+	}
+	if (c == 't')
+		GFAIL(true, opts->sort_func = &sort_time);
+	if (c == 'S')
+		GFAIL(true, opts->sort_func = &sort_size);
+	return (false);
+}
+
 static int			apply_opt(char c, short *bits, t_opts *opts)
 {
 	int	i;
 
+	if (apply_special(c, bits, opts))
+		return (0);
 	i = 0;
 	while (i < ARRAYLEN(g_options))
 	{
@@ -58,6 +76,7 @@ static int			apply_opt(char c, short *bits, t_opts *opts)
 			opts->time_field = g_time_opts[i].opt;
 			return (0);
 		}
+	opts->bad_opt = c;
 	return (1);
 }
 
@@ -71,8 +90,6 @@ static void			bits_to_fields(short bits, t_opts *opts)
 		opts->sort_rev = 1;
 	if (bits & OPT_SORT_NONE)
 		opts->sort_none = 1;
-	if (bits & OPT_SORT_TIME)
-		opts->sort_time = 1;
 	if (bits & OPT_NUM_UIDS)
 		opts->numeric_uids = 1;
 	if (bits & OPT_FULL_TIME)
@@ -85,8 +102,6 @@ static void			bits_to_fields(short bits, t_opts *opts)
 		opts->colors = 1;
 	if (bits & OPT_ARGV_NOFOLLOW)
 		opts->argv_nofollow = 1;
-	if (bits & OPT_NO_COLUMNS)
-		opts->allow_columns = 0;
 	if (bits & OPT_NO_DIRS)
 		opts->no_dirs = 1;
 }
@@ -96,27 +111,27 @@ t_opts				parse_opts(char **argv)
 	t_opts	ret;
 	int		i;
 	short	flags;
+	int		ac;
 
 	ft_bzero(&ret, sizeof(ret));
 	ret.colors = !!isatty(1);
 	ret.allow_columns = !!isatty(1);
 	ret.time_field = TIME_DEFAULT;
 	flags = 0;
-	while (*++argv)
-		if (**argv == '-')
+	ac = 1;
+	while (argv[ac])
+		if (argv[ac][0] == '-')
 		{
+			if (argv[ac][1] == 0)
+				break ;
 			ret.opt_count++;
-			if (argv[0][1] == '-' && argv[0][2] == 0)
+			if (argv[ac][1] == '-' && argv[ac][2] == 0)
 				break ;
 			i = 0;
-			while ((*argv)[++i])
-			{
-				if (0 != apply_opt((*argv)[i], &flags, &ret))
-				{
-					ret.bad_opt = (*argv)[i];
-					return (ret);
-				}
-			}
+			while (argv[ac][++i])
+				ZGUARD(GFAIL(ret, (void)0),
+						apply_opt(argv[ac][i], &flags, &ret));
+			ac++;
 		}
 	bits_to_fields(flags, &ret);
 	return (ret);

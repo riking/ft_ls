@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 14:22:47 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 15:41:35 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static t_dir_content	*new_dir(char *path)
 
 static struct stat		g_garbage_stat;
 
-static int				folstat(char *fullpath, struct stat *st)
+static int				folstat(const char *fullpath, struct stat *st)
 {
 	int errnum;
 
@@ -61,19 +61,17 @@ static bool				ft_stat(t_dir_content *r, char *name, bool nofollow)
 {
 	t_dirent	ent;
 
+	ft_bzero(&ent, sizeof(t_dirent));
 	ft_asprintf(&ent.name, "%s", name);
-	if (r->fullpath[0])
-		ft_asprintf(&ent.fullpath, "%s/%s", r->fullpath, ent.name);
-	else
-		ft_asprintf(&ent.fullpath, "%s", ent.name);
+	ft_asprintf(&ent.fullpath, "%s%s%s", r->fullpath,
+			r->fullpath[0] ? "/" : "", ent.name);
 	if (!ent.name || !ent.fullpath)
 	{
 		free_dirent(&ent, sizeof(t_dirent));
 		return (false);
 	}
-	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))), nofollow ?
-			lstat(ent.fullpath, &ent.stat) :
-			folstat(ent.fullpath, &ent.stat));
+	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))),
+			(nofollow ? &lstat : &folstat)(ent.fullpath, &ent.stat));
 	ent.broken_link = (IS_TYPE(&ent, S_IFLNK)) ?
 		(0 != stat(ent.fullpath, &g_garbage_stat)) : false;
 	ZGUARD(GFAIL(false, free_dirent(&ent, sizeof(t_dirent))),
@@ -95,7 +93,7 @@ t_dir_content			*ft_read_dir(char *path, t_la_type la)
 	{
 		if (dp->d_name[0] == '.' && la == LIST_NORMAL)
 			continue ;
-		if (!ft_stat(result, dp->d_name, false))
+		if (!ft_stat(result, dp->d_name, true))
 		{
 			free_dir(result);
 			closedir(dir);
@@ -106,8 +104,8 @@ t_dir_content			*ft_read_dir(char *path, t_la_type la)
 	return (result);
 }
 
-t_dir_content			*stat_argv(t_opts opts, char *argv[],
-		t_dir_content **dirs)
+t_dir_content			*stat_argv(t_opts opts,
+								char *argv[], t_dir_content **dirs)
 {
 	t_dir_content	*result;
 	t_dirent		*e;

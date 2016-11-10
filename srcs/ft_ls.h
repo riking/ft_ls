@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 13:54:49 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 15:56:20 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,19 @@
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
 
-# define GFAIL(val, expr) (void)(expr); return (val);
-# define GCONT(expr) (void)expr; continue ;
+# define GFAIL(val, expr) {(void)(expr); return (val);}
+# define GCONT(expr) {(void)expr; continue ;}
 # define ASGUARD(f, v, ...) ({int _r=ft_asprintf(v, __VA_ARGS__);if (_r<0){f}})
 # define ZGUARD(fail, expr) if ((expr) != 0) { fail }
 # define NGUARD(fail, expr) if ((expr) == NULL) { fail }
 
 # define IS_TYPE(ent, type) (((ent)->stat.st_mode & S_IFMT) == (type))
+
+# if 0 || defined(TRUE_CMDNAME)
+#  define PROGNAME ft_progname()
+# else
+#  define PROGNAME "ls"
+# endif
 
 extern bool			g_any_output;
 extern const char	*g_usage;
@@ -95,6 +101,7 @@ typedef enum		e_wtime {
 typedef struct		s_opts {
 	char			bad_opt;
 	t_wtime			time_field;
+	int				(*sort_func)(struct s_opts opts, t_dirent *a, t_dirent *b);
 	t_la_type		all_type;
 	bool			list_recurse:1;
 	bool			list_long:1;
@@ -186,7 +193,7 @@ size_t				calc_total(t_dir_content *d);
 void				sort_directory(t_opts opts, t_dir_content *d);
 int					sort_main(void *left, void *right, size_t size, void *data);
 int					sort_name(t_opts opts, t_dirent *a, t_dirent *b);
-int					sort_isdir(t_opts opts, t_dirent *a, t_dirent *b);
+int					sort_size(t_opts opts, t_dirent *a, t_dirent *b);
 int					sort_time(t_opts opts, t_dirent *a, t_dirent *b);
 
 int					long_list_dir(t_opts opts, t_dir_content *d);

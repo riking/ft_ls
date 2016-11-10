@@ -6,7 +6,7 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/11/10 14:23:12 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 14:31:39 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,12 @@ endif
 ifdef DBUG
 	CFLAGS += -fsanitize=address -g
 	LDFLAGS += -fsanitize=address -g
+endif
+
+ifdef RELEASE
+	CFLAGS += -fsanitize=address -O2
+	LDFLAGS += -fsanitize=address -O2
+	CFLAGS += -DTRUE_CMDNAME
 endif
 
 .PHONY: all clean fclean re
