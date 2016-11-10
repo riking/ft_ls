@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:40 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 14:25:58 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:38:16 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ char				*render_name(t_opts opts, t_dirent *e)
 			ret = readlink(e->fullpath, l, bufsiz - 1);
 		}
 		l[ret] = 0;
-		ASGUARD(GFAIL(NULL, free(l)), &s, "%s -> %s", e->name, l);
+		ft_asprintf(&s, "%s -> %s", e->name, l);
+		free(l);
 		return (s);
 	}
 	ASGUARD(GFAIL(NULL, (void)0), &s, "%s", e->name);
