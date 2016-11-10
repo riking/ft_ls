@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:17:53 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:28:47 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ static t_dir_content	*new_dir(char *path)
 	return (result);
 }
 
-static bool				ft_stat(t_dir_content *r, int len, char *name)
+static bool				ft_stat(t_dir_content *r, char *name)
 {
 	t_dirent	ent;
 
-	ft_asprintf(&ent.name, "%.*s", len, name);
+	ft_asprintf(&ent.name, "%s", name);
 	if (r->fullpath[0])
 		ft_asprintf(&ent.fullpath, "%s/%s", r->fullpath, ent.name);
 	else
@@ -77,7 +77,7 @@ t_dir_content			*ft_read_dir(char *path, t_la_type la)
 	{
 		if (dp->d_name[0] == '.' && la == LIST_NORMAL)
 			continue ;
-		if (!ft_stat(result, dp->d_namlen, dp->d_name))
+		if (!ft_stat(result, dp->d_name))
 		{
 			free_dir(result);
 			closedir(dir);
@@ -100,7 +100,7 @@ t_dir_content			*stat_argv(char *argv[],
 	ac = 1;
 	while (argv[ac])
 	{
-		if (!ft_stat(result, ft_strlen(argv[ac]), argv[ac]))
+		if (!ft_stat(result, argv[ac]))
 		{
 			free_dir(result);
 			return (NULL);
