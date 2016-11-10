@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 16:17:24 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 17:04:29 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 17:35:37 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ int				print_table(t_opts opts, t_array *table)
 	widths = align_table(table);
 	NGUARD(GFAIL(-1, (void)0), widths.ptr);
 	change_widths(opts, &widths);
-	idx[0] = 0;
-	while (idx[0] < table->item_count)
+	idx[0] = -1;
+	while (++idx[0] < table->item_count)
 	{
 		line = ft_ary_get(table, idx[0]);
-		idx[1] = 0;
-		while (idx[1] < line->item_count)
+		idx[1] = -1;
+		while (++idx[1] < line->item_count)
 		{
 			if (idx[1] + 1 < line->item_count)
 				ft_printf("%*s ", *(int*)ft_ary_get(&widths, idx[1]),
@@ -88,9 +88,8 @@ int				print_table(t_opts opts, t_array *table)
 			else
 				ft_printf("%s\n", *(char**)ft_ary_get(line, idx[1]));
 			g_any_output = true;
-			idx[1]++;
 		}
-		idx[0]++;
 	}
+	ft_ary_destroy(&widths);
 	return (0);
 }
