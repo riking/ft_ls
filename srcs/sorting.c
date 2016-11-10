@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 18:47:29 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/06 16:45:16 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 15:49:38 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,17 @@
 #include <libft.h>
 
 #include <stdlib.h>
+
+void	sort_directory(t_opts opts, t_dir_content *dir)
+{
+	t_sort_info		sortinfo;
+
+	sortinfo.func = &sort_name;
+	if (opts.sort_time)
+		sortinfo.func = &sort_time;
+	sortinfo.opts = opts;
+	ft_ary_sort(&dir->entries, &sort_main, &sortinfo);
+}
 
 int		sort_main(void *left, void *right, size_t size, void *data)
 {
@@ -36,15 +47,19 @@ int		sort_name(t_opts opts, t_dirent *a, t_dirent *b)
 
 int		sort_time(t_opts opts, t_dirent *a, t_dirent *b)
 {
-	time_t	left;
-	time_t	right;
+	struct timespec	left;
+	struct timespec	right;
 
 	left = select_time(opts, a);
 	right = select_time(opts, b);
-	if (left < right)
-		return (-1);
-	else if (left > right)
+	if (left.tv_sec < right.tv_sec)
 		return (1);
+	else if (left.tv_sec > right.tv_sec)
+		return (-1);
+	else if (left.tv_nsec < right.tv_nsec)
+		return (1);
+	else if (left.tv_nsec > right.tv_nsec)
+		return (-1);
 	else
 		return (sort_name(opts, a, b));
 }

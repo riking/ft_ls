@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 13:59:28 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 18:19:05 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 16:22:25 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char				*render_mode(t_dirent *e)
 {
 	char	buf[12];
 	ssize_t	i;
-	
+
 	ft_bzero(buf, 12);
 	i = 0;
 	buf[0] = g_ftype_info[0].chr;

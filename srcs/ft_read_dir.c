@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/06 16:03:42 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 16:21:35 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static t_dir_content	*new_dir(char *path)
 	return (result);
 }
 
-static bool		ft_stat(t_dir_content *r, int len, char *name)
+static bool				ft_stat(t_dir_content *r, int len, char *name)
 {
 	t_dirent	ent;
 
@@ -61,7 +61,7 @@ static bool		ft_stat(t_dir_content *r, int len, char *name)
 	return (true);
 }
 
-t_dir_content	*ft_read_dir(char *path, t_la_type la)
+t_dir_content			*ft_read_dir(char *path, t_la_type la)
 {
 	t_dir_content	*result;
 	struct dirent	*dp;
@@ -71,8 +71,6 @@ t_dir_content	*ft_read_dir(char *path, t_la_type la)
 	NGUARD(GFAIL(NULL, (void)0), dir);
 	result = new_dir(path);
 	NGUARD(GFAIL(NULL, closedir(dir)), result);
-	ZGUARD(GFAIL(NULL, (closedir(dir), free_dir(result))),
-			lstat(path, &result->self));
 	while ((dp = readdir(dir)) != NULL)
 	{
 		if (dp->d_name[0] == '.' && la == LIST_NORMAL)

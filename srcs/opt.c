@@ -6,25 +6,31 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/06 16:45:39 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 16:18:49 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 #include <libft.h>
 
-static t_option	g_options[] = {
+static t_option		g_options[] = {
 	{'l', OPT_LIST_LONG},
 	{'r', OPT_SORT_REV},
 	{'R', OPT_LIST_RECU},
 	{'a', OPT_LIST_ALL},
 	{'A', OPT_LIST_HIDN},
 	{'t', OPT_SORT_TIME},
-	{'n', OPT_NUM_UIDS},
+	{'n', OPT_NUM_UIDS | OPT_LIST_LONG},
 	{'T', OPT_FULL_TIME},
 };
 
-static int	apply_opt(char c, short *bits)
+static t_timeopt	g_time_opts[] = {
+	{'c', TIME_C},
+	{'u', TIME_A},
+	{'U', TIME_B},
+};
+
+static int			apply_opt(char c, short *bits, t_opts *opts)
 {
 	int	i;
 
@@ -38,10 +44,17 @@ static int	apply_opt(char c, short *bits)
 		}
 		i++;
 	}
+	i = -1;
+	while (++i < ARRAYLEN(g_time_opts))
+		if (c == g_time_opts[i].chr)
+		{
+			opts->time_field = g_time_opts[i].opt;
+			return (0);
+		}
 	return (1);
 }
 
-static void	bits_to_fields(short bits, t_opts *opts)
+static void			bits_to_fields(short bits, t_opts *opts)
 {
 	if (bits & OPT_LIST_LONG)
 		opts->list_long = 1;
@@ -61,7 +74,7 @@ static void	bits_to_fields(short bits, t_opts *opts)
 		opts->all_type = LIST_ALL;
 }
 
-t_opts	parse_opts(char **argv)
+t_opts				parse_opts(char **argv)
 {
 	t_opts	ret;
 	int		i;
@@ -69,19 +82,19 @@ t_opts	parse_opts(char **argv)
 
 	ft_bzero(&ret, sizeof(ret));
 	ret.time_field = TIME_DEFAULT;
-	while (*argv)
+	while (*++argv)
 		if (**argv == '-')
 		{
 			i = 0;
 			while ((*argv)[++i])
 			{
-				if (0 != apply_opt((*argv)[i], &flags))
+				if (0 != apply_opt((*argv)[i], &flags, &ret))
 				{
 					ret.bad_opt = (*argv)[i];
 					return (ret);
 				}
 			}
-			argv++;
+			ret.opt_count++;
 		}
 	bits_to_fields(flags, &ret);
 	return (ret);

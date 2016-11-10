@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/06 16:46:05 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 16:22:05 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,15 @@
 #include <errno.h>
 #include <string.h>
 
-static void	onerror(char *ctx)
+void		ft_perror(char *ctx)
 {
 	char	*errstr;
 
 	errstr = strerror(errno);
 	if (ctx)
-		ft_dprintf(2, "%s: %s: %s", ft_progname(), ctx, errstr);
+		ft_dprintf(2, "%s: %s: %s\n", ft_progname(), ctx, errstr);
 	else
-		ft_dprintf(2, "%s: %s", ft_progname(), errstr);
+		ft_dprintf(2, "%s: %s\n", ft_progname(), errstr);
 }
 
 /*
@@ -35,47 +35,33 @@ static void	onerror(char *ctx)
 ** ary:		t_array<t_array<char *>>
 */
 
-static int	long_list(t_opts opts, t_dir_content *dir)
-{
-	size_t		idx;
-	t_dirent	*e;
-	t_array		ary;
-	t_array		line;
-
-	ft_printf("total %lu\n", calc_total(dir));
-	idx = 0;
-	ary = ft_ary_create(sizeof(t_array));
-	NGUARD(GFAIL(1, onerror(0)), ary.ptr);
-	while (idx < dir->entries.item_count)
-	{
-		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
-		line = render_dirent(opts, e);
-		NGUARD(GFAIL(1, onerror(0)), line.ptr);
-		ft_ary_append(&ary, &line);
-		idx++;
-	}
-	ZGUARD(GFAIL(1, onerror(0)), print_table(opts, &ary));
-	return (0);
-}
-
 int			main(int argc, char **argv)
 {
 	t_dir_content	*dir;
 	t_opts			opts;
-	t_sort_info		sortinfo;
 
-	(void)argc;
 	ft_set_progname(argv[0]);
-	opts = parse_opts(argv + 1);
+	opts = parse_opts(argv);
+	if (opts.bad_opt != '\0')
+	{
+		ft_dprintf(2, "%s: illegal option -- %c", ft_progname(), opts.bad_opt);
+		ft_dprintf(2, "usage: %s [-RTUaclnrtu] [file ...]\n", ft_progname());
+		return (1);
+	}
+	argv += opts.opt_count;
+	argc -= opts.opt_count;
+	ft_printf("argc=%d, argv[argc] = %p", argc, argv[argc]);
 	dir = ft_read_dir(".", opts.all_type);
-	opts.list_long = true;
-
-	sortinfo.func = &sort_name;
-	sortinfo.opts = opts;
-
-	ft_ary_sort(&dir->entries, &sort_main, &sortinfo);
-
-	long_list(opts, dir);
+	if (!dir)
+	{
+		ft_perror(".");
+		return (1);
+	}
+	sort_directory(opts, dir);
+	if (opts.list_long)
+		long_list_dir(opts, dir);
+	else
+		short_list_dir(opts, dir);
 	free_dir(dir);
 	return (0);
 }

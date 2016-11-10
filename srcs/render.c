@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 12:31:40 by kyork             #+#    #+#             */
-/*   Updated: 2016/10/27 18:16:33 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/09 14:25:58 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ char				*render_name(t_opts opts, t_dirent *e)
 	ssize_t	bufsiz;
 	ssize_t	ret;
 
-	(void)opts;
-	if (IS_TYPE(e, S_IFLNK))
+	if (opts.list_long && IS_TYPE(e, S_IFLNK))
 	{
 		bufsiz = 32;
 		ret = 999;
