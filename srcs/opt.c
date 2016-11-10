@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 22:12:24 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 14:20:49 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 #include <libft.h>
 #include <unistd.h>
 
+const char			*g_usage = "usage: ft_ls [-GRTUacdflnrtu1] [file ...]";
+
 static t_option		g_options[] = {
-	{'l', OPT_LIST_LONG},
+	{'l', OPT_LIST_LONG | OPT_ARGV_NOFOLLOW},
 	{'r', OPT_SORT_REV},
 	{'R', OPT_LIST_RECU},
 	{'a', OPT_LIST_ALL},
@@ -23,6 +25,10 @@ static t_option		g_options[] = {
 	{'t', OPT_SORT_TIME},
 	{'n', OPT_NUM_UIDS | OPT_LIST_LONG},
 	{'T', OPT_FULL_TIME},
+	{'G', OPT_FORCE_COLOR},
+	{'f', OPT_SORT_NONE | OPT_LIST_ALL},
+	{'1', OPT_NO_COLUMNS},
+	{'d', OPT_NO_DIRS | OPT_ARGV_NOFOLLOW},
 };
 
 static t_timeopt	g_time_opts[] = {
@@ -63,6 +69,8 @@ static void			bits_to_fields(short bits, t_opts *opts)
 		opts->list_recurse = 1;
 	if (bits & OPT_SORT_REV)
 		opts->sort_rev = 1;
+	if (bits & OPT_SORT_NONE)
+		opts->sort_none = 1;
 	if (bits & OPT_SORT_TIME)
 		opts->sort_time = 1;
 	if (bits & OPT_NUM_UIDS)
@@ -75,6 +83,12 @@ static void			bits_to_fields(short bits, t_opts *opts)
 		opts->all_type = LIST_ALL;
 	if (bits & OPT_FORCE_COLOR)
 		opts->colors = 1;
+	if (bits & OPT_ARGV_NOFOLLOW)
+		opts->argv_nofollow = 1;
+	if (bits & OPT_NO_COLUMNS)
+		opts->allow_columns = 0;
+	if (bits & OPT_NO_DIRS)
+		opts->no_dirs = 1;
 }
 
 t_opts				parse_opts(char **argv)
@@ -91,6 +105,9 @@ t_opts				parse_opts(char **argv)
 	while (*++argv)
 		if (**argv == '-')
 		{
+			ret.opt_count++;
+			if (argv[0][1] == '-' && argv[0][2] == 0)
+				break ;
 			i = 0;
 			while ((*argv)[++i])
 			{
@@ -100,7 +117,6 @@ t_opts				parse_opts(char **argv)
 					return (ret);
 				}
 			}
-			ret.opt_count++;
 		}
 	bits_to_fields(flags, &ret);
 	return (ret);

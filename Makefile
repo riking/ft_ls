@@ -6,7 +6,7 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/11/09 21:56:40 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 14:23:12 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ FILENAMES	+= print_table.c blkcount.c columns.c
 FILENAMES	+= opt.c lister.c
 
 OBJS		= $(addprefix build/, $(FILENAMES:.c=.o))
-LIBS		= libft/libft.a libft/libftprintf.a
+LIBS		= libft/libft.a
 
 CFLAGS		+= -Wall -Wextra -Wmissing-prototypes
 #CFLAGS		= -Wall -Wextra -Wfloat-equal -Wundef -Wint-to-pointer-cast -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wcast-qual -Wmissing-prototypes -Wstrict-overflow=5 -Wwrite-strings -Wconversion --pedantic-errors
@@ -41,27 +41,27 @@ endif
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBS)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) -L libft -lft -lftprintf
-	printf "\e[32m\e[1m[OK]\e[m $(NAME)\n"
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) -L libft -lft
+	@printf "\e[32m\e[1m[OK]\e[m $(NAME)\n"
 
 install: $(NAME)
 	cp $(NAME) $(HOME)/bin/$(NAME)
 
 libft/libft.a:
-	make -C libft libft.a
-
-libft/libftprintf.a:
-	make -C libft libftprintf.a
+	$(MAKE) -C libft libft.a
 
 clean:
 	rm -rf build
-	make -C libft clean
+	$(MAKE) -C libft clean
+	@printf "\e[33m\e[1m[CLEAN]\e[m $$(basename $$(pwd))\n"
 
 fclean: clean
 	rm -f $(NAME)
-	make -C libft fclean
+	$(MAKE) -C libft fclean
+	@printf "\e[33m\e[1m[FCLEAN]\e[m $$(basename $$(pwd))\n"
 
-re: fclean all
+re: fclean
+	$(MAKE) all
 
 build:
 	mkdir -p build

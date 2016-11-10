@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 14:00:51 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 14:22:47 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,12 @@ t_dir_content			*stat_argv(t_opts opts, char *argv[],
 	{
 		if (!ft_stat(result, argv[ac], opts.argv_nofollow))
 		{
-			free_dir(result);
-			return (NULL);
+			ft_perror(argv[ac]);
+			GCONT(ac++);
 		}
 		e = (t_dirent*)ft_ary_get(&result->entries,
 				result->entries.item_count - 1);
-		if (IS_TYPE(e, S_IFDIR))
+		if (!opts.no_dirs && IS_TYPE(e, S_IFDIR))
 		{
 			ft_ary_append(&(*dirs)->entries, e);
 			ft_ary_remove(&result->entries, result->entries.item_count - 1);
