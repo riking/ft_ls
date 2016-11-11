@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 14:30:48 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 13:55:02 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 21:13:13 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,8 @@ void		recurse_list(t_opts opts, t_dir_content *dir)
 	while (idx < dir->entries.item_count)
 	{
 		e = (t_dirent*)ft_ary_get(&dir->entries, idx);
-		if (IS_TYPE(e, S_IFDIR) && 0 != ft_strcmp(e->name, ".") &&
-				0 != ft_strcmp(e->name, ".."))
+		if (!opts.no_dirs && IS_TYPE(e, S_IFDIR) &&
+				0 != ft_strcmp(e->name, ".") && 0 != ft_strcmp(e->name, ".."))
 		{
 			header_list(opts, e->fullpath, e->name);
 		}

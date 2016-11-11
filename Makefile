@@ -6,7 +6,7 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/11/10 14:31:39 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 21:17:05 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,8 +37,8 @@ ifdef DBUG
 endif
 
 ifdef RELEASE
-	CFLAGS += -fsanitize=address -O2
-	LDFLAGS += -fsanitize=address -O2
+	CFLAGS += -O2
+	LDFLAGS += -O2
 	CFLAGS += -DTRUE_CMDNAME
 endif
 
