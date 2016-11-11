@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 19:51:08 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 17:21:30 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 18:58:48 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,8 @@ static t_array	arrange(t_array *namelist, size_t num_rows)
 	size_t	idx;
 	t_array	table;
 	t_array	row;
-	t_array widths;
 
 	table = ft_ary_create(sizeof(t_array));
-	ft_ary_grow(&table, num_rows);
 	NGUARD(GFAIL(FT_ARY_NULL, (void)0), table.ptr);
 	idx = 0;
 	while (idx < num_rows && idx < namelist->item_count)
@@ -73,50 +71,47 @@ static t_array	arrange(t_array *namelist, size_t num_rows)
 	return (table);
 }
 
-static bool		check(t_array *namelist, size_t num_rows, int cols)
+static bool		check(t_array *namelist, size_t num_cols, int twidth, size_t *rows)
 {
 	int		*widths;
 	ssize_t	len;
-	size_t	columns;
 	size_t	idx;
 
-	columns = MAX(1, namelist->item_count / num_rows);
-	widths = ft_memalloc(sizeof(int) * columns);
+	widths = ft_memalloc(sizeof(int) * num_cols);
 	NGUARD(GFAIL(true, (void)0), widths);
 	idx = 0;
 	while (idx < namelist->item_count)
 	{
 		len = color_strlen(*(char**)ft_ary_get(namelist, idx));
-		if (widths[idx % columns] < len)
-			widths[idx % columns] = (int)len;
+		if (widths[idx % num_cols] < len)
+			widths[idx % num_cols] = (int)len;
 		idx++;
 	}
+	*rows = (idx / num_cols) + 1;
 	len = 0;
 	idx = 0;
-	while (idx < columns)
+	while (idx < num_cols)
 		len += widths[idx++] + 2;
 	free(widths);
-	return (len < cols);
+	return (len < twidth);
 }
 
 int				print_columns(t_opts opts, t_array *namelist)
 {
 	t_array			table;
+	size_t			num_cols;
 	size_t			num_rows;
-	size_t			wtotal;
 	struct winsize	w;
 
-	w.ws_col = 1;
+	w.ws_col = 80;
 	ioctl(1, TIOCGWINSZ, &w);
-	num_rows = 1;
-	if (w.ws_col == 1 || !opts.columns)
-		num_rows = 2147383647;
-	while (num_rows < namelist->item_count)
-	{
-		if (check(namelist, num_rows, w.ws_col))
-			break ;
-		num_rows++;
-	}
+	num_cols = MAX(1, w.ws_col / 2);
+	if (!opts.columns)
+		num_cols = 1;
+	while (num_cols > 1 && !check(namelist, num_cols, w.ws_col, &num_rows))
+		num_cols--;
+	if (num_cols == 1)
+		num_rows = namelist->item_count;
 	table = arrange(namelist, num_rows);
 	print_table(opts, &table);
 	CLEAN_TAB;
