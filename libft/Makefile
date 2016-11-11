@@ -6,14 +6,14 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/08/22 09:02:39 by kyork             #+#    #+#              #
-#    Updated: 2016/11/10 12:13:39 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 15:16:02 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 PREFIX		= $(HOME)
 
 FILENAMES	+= get_next_line.c
-FILENAMES	+= ft_progname.c
+FILENAMES	+= ft_progname.c ft_basename.c
 
 FILENAMES	+= ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c
 FILENAMES	+= ft_toupper.c ft_tolower.c
@@ -120,8 +120,6 @@ NAME		= libft.a
 
 all: $(NAME) libftprintf.a
 
-re: fclean all
-
 clean:
 	rm -rf build/
 	rm -f $(TESTBINS)
@@ -135,6 +133,9 @@ fclean: clean
 	make -C ft_printf fclean
 	@printf "\e[33m\e[1m[FCLEAN]\e[m $$(basename $$(pwd))\n"
 
+re: fclean
+	$(MAKE) all
+
 build:
 	mkdir build/
 
@@ -144,7 +145,7 @@ $(NAME): libftfuncs.a libftprintf.a
 	libtool -static -o $@ $^
 	@printf "\e[32m\e[1m[OK]\e[m $$(basename $@)\n"
 
-libftfuncs.a: $(OBJS)
+libftfuncs.a: build $(OBJS)
 	ar rcs $@ $(OBJS)
 	@printf "\e[32m\e[1m[OK]\e[m $$(basename $@)\n"
 
@@ -152,7 +153,7 @@ libftprintf.a: ft_printf/libftprintf.a
 	ln -f -s ft_printf/libftprintf.a
 
 ft_printf/libftprintf.a:
-	make -C ft_printf libftprintf.a
+	$(MAKE) -C ft_printf libftprintf.a
 
 ####
 # Install
