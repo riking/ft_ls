@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:10:33 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:42:23 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ static void	traverse_argv(t_opts opts, int argc, char *argv[])
 		short_list_dir(opts, files);
 	opts.no_total = 0;
 	list_argv_dirs(opts, dirs, argc > 2);
+	free_dir(files);
+	free_dir(dirs);
 }
 
 int			main(int argc, char **argv)

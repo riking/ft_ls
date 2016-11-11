@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 19:51:08 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/09 22:11:05 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:46:56 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,10 @@ int				print_columns(t_opts opts, t_array *namelist)
 		wtotal = 0;
 		table = arrange(namelist, num_rows, &wtotal);
 		NGUARD(GFAIL(0, ft_perror("malloc")), table.ptr);
+		CLEAN_TAB;
 		if (wtotal < w.ws_col)
 			break ;
 		num_rows++;
-		CLEAN_TAB;
 	}
 	table = arrange(namelist, num_rows, &wtotal);
 	print_table(opts, &table);
