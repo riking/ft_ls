@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 15:41:18 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 15:41:35 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 19:05:46 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ static int				folstat(const char *fullpath, struct stat *st)
 			errno = 0;
 			return (0);
 		}
+		errno = errnum;
 		return (-1);
 	}
 	return (0);

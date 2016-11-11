@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:27:32 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 19:06:23 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static t_timeopt	g_time_opts[] = {
 	{'U', TIME_B},
 };
 
-#include <ft_printf.h>
 static bool			apply_special(char c, uint32_t *bits, t_opts *opts)
 {
 	if (c == '1')

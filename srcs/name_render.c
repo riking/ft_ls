@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 17:50:50 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:20:20 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 19:07:26 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char				*render_name(t_opts opts, t_dirent *e)
 		free(l);
 	}
 	else
-		ft_asprintf(&s, "%s%s%s%s", c, e->name, opts.colors ? STR_COL_RESET : "",
-				suffix_str(opts, e));
+		ft_asprintf(&s, "%s%s%s%s", c, e->name, (opts.colors ?
+				STR_COL_RESET : ""), suffix_str(opts, e));
 	return (s);
 }

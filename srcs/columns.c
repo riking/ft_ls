@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 19:51:08 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 18:58:48 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 19:06:57 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ static t_array	arrange(t_array *namelist, size_t num_rows)
 	return (table);
 }
 
-static bool		check(t_array *namelist, size_t num_cols, int twidth, size_t *rows)
+static bool		check(t_array *namelist,
+						size_t num_cols, int twidth, size_t *rows)
 {
 	int		*widths;
 	ssize_t	len;
