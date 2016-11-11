@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/27 18:47:29 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 15:11:55 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:29:15 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,14 @@ void	sort_directory(t_opts opts, t_dir_content *dir)
 {
 	t_sort_info		sortinfo;
 
-	if (!opts.sort_func)
-		opts.sort_func = &sort_name;
-	sortinfo.func = opts.sort_func;
+	if (opts.sort_none)
+		return ;
+	else if (opts.sort_size)
+		sortinfo.func = &sort_size;
+	else if (opts.sort_time)
+		sortinfo.func = &sort_time;
+	else
+		sortinfo.func = &sort_name;
 	sortinfo.opts = opts;
 	ft_ary_sort(&dir->entries, &sort_main, &sortinfo);
 }

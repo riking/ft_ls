@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:19:34 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:27:42 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ typedef enum		e_wtime {
 # define OPT_SORT_REV  (1 << 2)
 # define OPT_SORT_NONE (1 << 3)
 # define OPT_SORT_TIME (1 << 4)
+# define OPT_SORT_SIZE (1 << 15)
 # define OPT_NUM_UIDS  (1 << 5)
 # define OPT_FULL_TIME (1 << 6)
 # define OPT_LIST_ALL  (1 << 7)
@@ -102,7 +103,6 @@ typedef enum		e_wtime {
 # define OPT_NAME_SUFX		(1 << 14)
 
 typedef struct		s_opts {
-	int				(*sort_func)(struct s_opts opts, t_dirent *a, t_dirent *b);
 	int				opt_count;
 	t_wtime			time_field;
 	t_la_type		all_type;
@@ -111,6 +111,7 @@ typedef struct		s_opts {
 	uint8_t			sort_none:1;
 	uint8_t			sort_rev:1;
 	uint8_t			sort_time:1;
+	uint8_t			sort_size:1;
 	uint8_t			numeric_uids:1;
 	uint8_t			list_full_time:1;
 	uint8_t			allow_columns:1;
@@ -130,7 +131,7 @@ t_dir_content		*stat_argv(t_opts opts, char *argv[], t_dir_content **dirs);
 
 typedef struct		s_option {
 	char			chr;
-	short			bit;
+	uint32_t		bit;
 }					t_option;
 
 typedef struct		s_timeopt {

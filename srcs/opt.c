@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:18:35 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:27:32 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,17 @@ const char			*g_usage = "usage: ft_ls [-FGRSTUacdflnprtu1] [file ...]";
 
 static t_option		g_options[] = {
 	{'l', OPT_LIST_LONG | OPT_ARGV_NOFOLLOW},
-	{'r', OPT_SORT_REV},
 	{'R', OPT_LIST_RECU},
 	{'a', OPT_LIST_ALL},
 	{'A', OPT_LIST_HIDN},
 	{'n', OPT_NUM_UIDS | OPT_LIST_LONG},
 	{'T', OPT_FULL_TIME},
 	{'G', OPT_FORCE_COLOR},
-	{'f', OPT_SORT_NONE | OPT_LIST_ALL},
-	{'1', OPT_NO_COLUMNS},
 	{'d', OPT_NO_DIRS | OPT_ARGV_NOFOLLOW},
+	{'f', OPT_SORT_NONE | OPT_LIST_ALL},
+	{'r', OPT_SORT_REV},
+	{'t', OPT_SORT_TIME},
+	{'S', OPT_SORT_SIZE},
 };
 
 static t_timeopt	g_time_opts[] = {
@@ -37,19 +38,14 @@ static t_timeopt	g_time_opts[] = {
 };
 
 #include <ft_printf.h>
-static bool			apply_special(char c, short *bits, t_opts *opts)
+static bool			apply_special(char c, uint32_t *bits, t_opts *opts)
 {
-	(void)opts;
 	if (c == '1')
 	{
-		*bits |= OPT_NO_COLUMNS;
+		opts->allow_columns = 0;
 		*bits &= ~OPT_LIST_LONG;
 		return (true);
 	}
-	if (c == 't')
-		GFAIL(true, opts->sort_func = &sort_time);
-	if (c == 'S')
-		GFAIL(true, opts->sort_func = &sort_size);
 	if (c == 'p')
 		GFAIL(true, opts->name_suffix = 0x1);
 	if (c == 'F')
@@ -57,7 +53,7 @@ static bool			apply_special(char c, short *bits, t_opts *opts)
 	return (false);
 }
 
-static int			apply_opt(char c, short *bits, t_opts *opts)
+static int			apply_opt(char c, uint32_t *bits, t_opts *opts)
 {
 	int	i;
 
@@ -81,22 +77,26 @@ static int			apply_opt(char c, short *bits, t_opts *opts)
 	return (1);
 }
 
-static void			bits_fields_2(short bits, t_opts *opts)
+static void			bits_fields_2(uint32_t bits, t_opts *opts)
 {
-	if (bits & OPT_NO_DIRS)
-		opts->no_dirs = 1;
+	if (bits & OPT_SORT_REV)
+		opts->sort_rev = 1;
+	if (bits & OPT_SORT_NONE)
+		opts->sort_none = 1;
+	if (bits & OPT_SORT_TIME)
+		opts->sort_time = 1;
+	if (bits & OPT_SORT_SIZE)
+		opts->sort_size = 1;
 }
 
-static void			bits_to_fields(short bits, t_opts *opts)
+static void			bits_to_fields(uint32_t bits, t_opts *opts)
 {
 	if (bits & OPT_LIST_LONG)
 		opts->list_long = 1;
 	if (bits & OPT_LIST_RECU)
 		opts->list_recurse = 1;
-	if (bits & OPT_SORT_REV)
-		opts->sort_rev = 1;
-	if (bits & OPT_SORT_NONE)
-		opts->sort_none = 1;
+	if (bits & OPT_NO_DIRS)
+		opts->no_dirs = 1;
 	if (bits & OPT_NUM_UIDS)
 		opts->numeric_uids = 1;
 	if (bits & OPT_FULL_TIME)
@@ -125,9 +125,9 @@ static t_opts		default_opts(void)
 
 bool				parse_opts(t_opts *opts, char **argv)
 {
-	int		i;
-	short	flags;
-	int		ac;
+	int			i;
+	uint32_t	flags;
+	int			ac;
 
 	*opts = default_opts();
 	flags = 0;
