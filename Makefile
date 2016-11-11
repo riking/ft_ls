@@ -6,13 +6,13 @@
 #    By: kyork <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/09 19:11:26 by kyork             #+#    #+#              #
-#    Updated: 2016/11/10 21:17:05 by kyork            ###   ########.fr        #
+#    Updated: 2016/11/10 21:58:35 by kyork            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ft_ls
 
-FILENAMES	+= ft_read_dir.c main.c free_struct.c
+FILENAMES	+= ft_read_dir.c main.c free_struct.c argv_handler.c
 FILENAMES	+= render.c colors.c sorting.c
 FILENAMES	+= part_render.c uid_render.c name_render.c
 FILENAMES	+= print_table.c blkcount.c columns.c

@@ -15,7 +15,6 @@
 
 #include <pwd.h>
 #include <grp.h>
-#include <time.h>
 #include <stdlib.h>
 
 #define SIX_MONTHS ((365 / 2) * 86400)
@@ -64,11 +63,11 @@ struct timespec	select_time(t_opts opts, t_dirent *e)
 }
 
 /*
-** Thu Nov 24 18:22:48 1986n0
-** 01234567890123456789012345
+** Thu Nov 24 18:22:48 1986\n\0
+** 012345678901234567890123 4 5
 **     ^^^^^^^^^^^^
 **     ^^^^^^^        ^^^^^
-** ^^^^^^^^^^^^^^^^^^^^^^^^
+**     ^^^^^^^^^^^^^^^^^^^^
 */
 
 char			*render_time(t_opts opts, t_dirent *e)

@@ -12,11 +12,8 @@
 
 #include "ft_ls.h"
 #include <ft_printf.h>
-#include <libft.h>
-#include <stdlib.h>
 
 #include <errno.h>
-#include <string.h>
 #include <unistd.h>
 
 static char		*g_argv_dot[] = {"", ".", NULL};

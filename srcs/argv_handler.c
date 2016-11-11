@@ -10,9 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_ls.h"
+
 #include <stdlib.h>
 #include <errno.h>
-#include "ft_ls.h"
 
 static void	noheader_list(t_opts opts, char *fullpath, char *name)
 {

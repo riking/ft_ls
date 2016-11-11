@@ -24,7 +24,6 @@
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
 # define MAX(a, b) ((a) > (b) ? (a) : (b))
-# define CEILDIV(a, b) (((a) + (b) - 1) / (b))
 
 # define GFAIL(val, expr) {(void)(expr); return (val);}
 # define GCONT(expr) {(void)expr; continue ;}
@@ -34,7 +33,7 @@
 
 # define IS_TYPE(ent, type) (((ent)->stat.st_mode & S_IFMT) == (type))
 
-# if 0 || defined(TRUE_CMDNAME)
+# if defined(TRUE_CMDNAME)
 #  define PROGNAME ft_progname()
 # else
 #  define PROGNAME "ls"
@@ -92,17 +91,14 @@ typedef enum		e_wtime {
 # define OPT_SORT_REV  (1 << 2)
 # define OPT_SORT_NONE (1 << 3)
 # define OPT_SORT_TIME (1 << 4)
-# define OPT_SORT_SIZE (1 << 15)
-# define OPT_NUM_UIDS  (1 << 5)
-# define OPT_FULL_TIME (1 << 6)
-# define OPT_LIST_ALL  (1 << 7)
-# define OPT_LIST_HIDN (1 << 8)
-# define OPT_FORCE_COLOR (1 << 9)
-# define OPT_ARGV_NOFOLLOW	(1 << 10)
-# define OPT_NO_DIRS 		(1 << 11)
-# define OPT_NO_COLUMNS		(1 << 12)
-# define OPT_DIR_SUFX		(1 << 13)
-# define OPT_NAME_SUFX		(1 << 14)
+# define OPT_SORT_SIZE (1 << 5)
+# define OPT_NUM_UIDS  (1 << 6)
+# define OPT_FULL_TIME (1 << 7)
+# define OPT_LIST_ALL  (1 << 8)
+# define OPT_LIST_HIDN (1 << 9)
+# define OPT_FORCE_COLOR	(1 << 10)
+# define OPT_ARGV_NOFOLLOW	(1 << 11)
+# define OPT_NO_DIRS 		(1 << 12)
 
 typedef struct		s_opts {
 	int				opt_count;
@@ -127,11 +123,6 @@ typedef struct		s_opts {
 	char			bad_opt;
 }					t_opts;
 
-t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
-char				*as_readlink(char *path);
-void				traverse_argv(t_opts opts, int argc, char *argv[]);
-t_dir_content		*stat_argv(t_opts opts, char *argv[], t_dir_content **dirs);
-
 typedef struct		s_option {
 	char			chr;
 	uint32_t		bit;
@@ -142,12 +133,18 @@ typedef struct		s_timeopt {
 	t_wtime			opt;
 }					t_timeopt;
 
-bool				parse_opts(t_opts *opts, char **argv);
-
 typedef struct		s_ftype_info {
 	mode_t			mask;
 	char			chr;
 }					t_ftype_info;
+
+typedef struct		s_filename_color {
+	mode_t			type;
+	char			*name;
+	const char		*color;
+}					t_filename_color;
+
+# define STR_COL_RESET "\e[0m"
 
 typedef int			(*t_dirent_sorter)(t_opts opts,
 						t_dirent *left, t_dirent *right);
@@ -156,6 +153,13 @@ typedef struct		s_sort_info {
 	t_dirent_sorter	func;
 	t_opts			opts;
 }					t_sort_info;
+
+t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
+char				*as_readlink(char *path);
+void				traverse_argv(t_opts opts, int argc, char *argv[]);
+t_dir_content		*stat_argv(t_opts opts, char *argv[], t_dir_content **dirs);
+
+bool				parse_opts(t_opts *opts, char **argv);
 
 struct timespec		select_time(t_opts opts, t_dirent *e);
 
@@ -168,14 +172,6 @@ char				*render_name(t_opts opts, t_dirent *e);
 
 t_array				render_dirent(t_opts opts, t_dirent *e);
 
-typedef struct		s_filename_color {
-	mode_t			type;
-	char			*name;
-	const char		*color;
-}					t_filename_color;
-
-# define STR_COL_RESET "\e[0m"
-
 const char			*get_color(t_opts opts, t_dirent *e);
 size_t				color_strlen(char *s);
 
@@ -183,13 +179,6 @@ size_t				color_strlen(char *s);
 ** table: t_array<t_array<char *>>
 */
 int					print_table(t_opts opts, t_array *table);
-
-/*
-** table:  t_array<t_array<char*>>
-** return: t_array<int>
-** return[i] is the widest string of table[...][i]
-*/
-t_array				align_table(t_array *table);
 
 /*
 ** namelist: t_array<char*>

@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-#include <libft.h>
-#include <unistd.h>
 
 const char			*g_usage = "usage: ft_ls [-FGRSTUacdflnprtu1] [file ...]";
 

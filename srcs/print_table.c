@@ -21,10 +21,14 @@ bool			g_any_output;
 ** line:	t_array<char *>
 ** widths:	t_array<int>
 **
-** ft_ary_get returns an unfreeable *T valid until array is modified
+** remember, ft_ary_get returns an unfreeable *T valid until array is modified
 */
 
-t_array			align_table(t_array *table)
+/*
+** return: t_array<int>
+** return[i] is the widest string of table[...][i]
+*/
+static t_array	align_table(t_array *table)
 {
 	t_array	widths;
 	t_array	*line;
@@ -40,7 +44,7 @@ t_array			align_table(t_array *table)
 		idx[1] = 0;
 		while (idx[1] < line->item_count)
 		{
-			width = color_strlen(*(char**)ft_ary_get(line, idx[1]));
+			width = (int)color_strlen(*(char**)ft_ary_get(line, idx[1]));
 			if (widths.item_count <= idx[1] ||
 					width > *(int*)ft_ary_get(&widths, idx[1]))
 				ft_ary_set(&widths, &width, idx[1]);

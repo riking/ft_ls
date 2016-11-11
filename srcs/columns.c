@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-#include <ft_printf.h>
 
 #include <sys/ioctl.h>
 #include <stdlib.h>

@@ -12,7 +12,6 @@
 
 #include "ft_ls.h"
 #include <stdlib.h>
-#include <ft_printf.h>
 
 void	free_dirent(void *ptr, size_t size)
 {

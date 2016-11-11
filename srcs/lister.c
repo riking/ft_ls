@@ -12,7 +12,6 @@
 
 #include "ft_ls.h"
 #include <ft_printf.h>
-#include <errno.h>
 
 static void	onerror(t_array ary)
 {
