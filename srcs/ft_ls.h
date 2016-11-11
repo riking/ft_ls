@@ -129,6 +129,7 @@ typedef struct		s_opts {
 
 t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
 char				*as_readlink(char *path);
+void				traverse_argv(t_opts opts, int argc, char *argv[]);
 t_dir_content		*stat_argv(t_opts opts, char *argv[], t_dir_content **dirs);
 
 typedef struct		s_option {

@@ -111,24 +111,12 @@ static void			bits_to_fields(uint32_t bits, t_opts *opts)
 	bits_fields_2(bits, opts);
 }
 
-static t_opts		default_opts(void)
-{
-	t_opts	ret;
-
-	ft_bzero(&ret, sizeof(ret));
-	ret.colors = !!isatty(1);
-	ret.allow_columns = !!isatty(1);
-	ret.time_field = TIME_DEFAULT;
-	return (ret);
-}
-
 bool				parse_opts(t_opts *opts, char **argv)
 {
 	int			i;
 	uint32_t	flags;
 	int			ac;
 
-	*opts = default_opts();
 	flags = 0;
 	ac = 1;
 	while (argv[ac])
@@ -141,7 +129,7 @@ bool				parse_opts(t_opts *opts, char **argv)
 				break ;
 			i = 0;
 			while (argv[ac][++i])
-				ZGUARD(GFAIL(false, (void)0),
+				ZGUARD(GFAIL(false, 0),
 						apply_opt(argv[ac][i], &flags, opts));
 			ac++;
 		}
