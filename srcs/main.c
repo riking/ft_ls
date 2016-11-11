@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 15:50:57 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:10:33 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int			main(int argc, char **argv)
 	t_opts			opts;
 
 	ft_set_progname(argv[0]);
-	opts = parse_opts(argv);
+	parse_opts(&opts, argv);
 	if (opts.bad_opt != '\0')
 	{
 		ft_dprintf(2, "%s: illegal option -- %c\n", argv[0],

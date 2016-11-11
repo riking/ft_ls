@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 17:50:50 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 14:01:20 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:14:53 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-char			*as_readlink(char *path)
+char				*as_readlink(char *path)
 {
 	char	*l;
 	ssize_t	bufsiz;
@@ -44,7 +44,26 @@ char			*as_readlink(char *path)
 	return (l);
 }
 
-char			*render_name(t_opts opts, t_dirent *e)
+static const char	*suffix_str(t_opts opts, t_dirent *e)
+{
+	if (opts.dir_suffix && IS_TYPE(e, S_IFDIR))
+		return ("/");
+	if (!opts.name_suffix)
+		return ("");
+	if (IS_TYPE(e, S_IFREG) && (e->stat.st_mode & 0111))
+		return ("*");
+	if (IS_TYPE(e, S_IFLNK))
+		return ("@");
+	if (IS_TYPE(e, S_IFSOCK))
+		return ("=");
+	if (IS_TYPE(e, S_IFWHT))
+		return ("%");
+	if (IS_TYPE(e, S_IFIFO))
+		return ("|");
+	return ("");
+}
+
+char				*render_name(t_opts opts, t_dirent *e)
 {
 	char		*s;
 	char		*l;
@@ -54,11 +73,12 @@ char			*render_name(t_opts opts, t_dirent *e)
 	if (opts.list_long && IS_TYPE(e, S_IFLNK))
 	{
 		l = as_readlink(e->fullpath);
-		ft_asprintf(&s, "%s%s%s -> %s", c, e->name,
-				opts.colors ? STR_COL_RESET : "", l);
+		ft_asprintf(&s, "%s%s%s%s -> %s", c, e->name,
+				opts.colors ? STR_COL_RESET : "", suffix_str(opts, e), l);
 		free(l);
 	}
 	else
-		ft_asprintf(&s, "%s%s%s", c, e->name, opts.colors ? STR_COL_RESET : "");
+		ft_asprintf(&s, "%s%s%s%s", c, e->name, opts.colors ? STR_COL_RESET : "",
+				suffix_str(opts, e));
 	return (s);
 }

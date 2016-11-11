@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 15:56:20 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:14:20 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,11 @@ typedef enum		e_wtime {
 # define OPT_LIST_ALL  (1 << 7)
 # define OPT_LIST_HIDN (1 << 8)
 # define OPT_FORCE_COLOR (1 << 9)
-# define OPT_ARGV_NOFOLLOW (1 << 10)
-# define OPT_NO_DIRS   (1 << 11)
-# define OPT_NO_COLUMNS (1 << 12)
+# define OPT_ARGV_NOFOLLOW	(1 << 10)
+# define OPT_NO_DIRS 		(1 << 11)
+# define OPT_NO_COLUMNS		(1 << 12)
+# define OPT_DIR_SUFX		(1 << 13)
+# define OPT_NAME_SUFX		(1 << 14)
 
 typedef struct		s_opts {
 	char			bad_opt;
@@ -114,6 +116,8 @@ typedef struct		s_opts {
 	bool			colors:1;
 	bool			argv_nofollow:1;
 	bool			no_dirs:1;
+	bool			name_suffix:1;
+	bool			dir_suffix:1;
 
 	bool			columns:1;
 	bool			no_total:1;
@@ -134,7 +138,7 @@ typedef struct		s_timeopt {
 	t_wtime			opt;
 }					t_timeopt;
 
-t_opts				parse_opts(char **argv);
+bool				parse_opts(t_opts *opts, char **argv);
 
 typedef struct		s_ftype_info {
 	mode_t			mask;
