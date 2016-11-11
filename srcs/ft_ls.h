@@ -63,20 +63,6 @@ typedef enum		e_la_type {
 	LIST_ALL,
 }					t_la_type;
 
-void				free_dir(t_dir_content *content);
-void				free_dirent(void *ptr, size_t size);
-void				free_string(void *ptr, size_t size);
-
-/*
-** ptr: *t_array<char*>
-*/
-void				free_string_array(void *ptr, size_t size);
-
-/*
-** ary: t_array<t_array<char*>>
-*/
-void				free_string_array_array(t_array ary);
-
 typedef enum		e_wtime {
 	TIME_M,
 	TIME_A,
@@ -154,6 +140,12 @@ typedef struct		s_sort_info {
 	t_opts			opts;
 }					t_sort_info;
 
+void				free_dir(t_dir_content *content);
+void				free_dirent(void *ptr, size_t size);
+void				free_string(void *ptr, size_t size);
+void				free_string_array(void *ptr, size_t size);
+void				free_string_array_array(t_array ary);
+
 t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
 char				*as_readlink(char *path);
 void				traverse_argv(t_opts opts, int argc, char *argv[]);
@@ -177,12 +169,9 @@ size_t				color_strlen(char *s);
 
 /*
 ** table: t_array<t_array<char *>>
-*/
-int					print_table(t_opts opts, t_array *table);
-
-/*
 ** namelist: t_array<char*>
 */
+int					print_table(t_opts opts, t_array *table);
 int					print_columns(t_opts opts, t_array *namelist);
 
 size_t				calc_total(t_dir_content *d);
