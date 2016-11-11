@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:22:44 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:42:23 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:51:59 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,8 @@ static void	traverse_argv(t_opts opts, int argc, char *argv[])
 	argv_ary = ft_ary_viewof(argv + 1, argc - 1, sizeof(char*));
 	ft_ary_sort(&argv_ary, &ary_strcmp, 0);
 	files = stat_argv(opts, argv, &dirs);
+	if (!files || !dirs)
+		return ;
 	sort_directory(opts, files);
 	sort_directory(opts, dirs);
 	opts.no_total = 1;

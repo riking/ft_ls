@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 19:51:08 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:46:56 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 17:21:30 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static t_array	one_row(t_array *namelist, size_t offset, size_t num_rows)
 	return (row);
 }
 
-static t_array	arrange(t_array *namelist, size_t num_rows, size_t *wtotal)
+static t_array	arrange(t_array *namelist, size_t num_rows)
 {
 	size_t	idx;
 	t_array	table;
@@ -60,6 +60,7 @@ static t_array	arrange(t_array *namelist, size_t num_rows, size_t *wtotal)
 	t_array widths;
 
 	table = ft_ary_create(sizeof(t_array));
+	ft_ary_grow(&table, num_rows);
 	NGUARD(GFAIL(FT_ARY_NULL, (void)0), table.ptr);
 	idx = 0;
 	while (idx < num_rows && idx < namelist->item_count)
@@ -69,14 +70,33 @@ static t_array	arrange(t_array *namelist, size_t num_rows, size_t *wtotal)
 		ZGUARD(GFAIL(FT_ARY_NULL, CLEAN_TAB), ft_ary_append(&table, &row));
 		idx++;
 	}
-	widths = align_table(&table);
-	NGUARD(GFAIL(FT_ARY_NULL, CLEAN_TAB), widths.ptr);
-	idx = -1;
-	*wtotal = 0;
-	while (++idx < widths.item_count)
-		*wtotal += *(int*)ft_ary_get(&widths, idx) + 2;
-	ft_ary_destroy(&widths);
 	return (table);
+}
+
+static bool		check(t_array *namelist, size_t num_rows, int cols)
+{
+	int		*widths;
+	ssize_t	len;
+	size_t	columns;
+	size_t	idx;
+
+	columns = MAX(1, namelist->item_count / num_rows);
+	widths = ft_memalloc(sizeof(int) * columns);
+	NGUARD(GFAIL(true, (void)0), widths);
+	idx = 0;
+	while (idx < namelist->item_count)
+	{
+		len = color_strlen(*(char**)ft_ary_get(namelist, idx));
+		if (widths[idx % columns] < len)
+			widths[idx % columns] = (int)len;
+		idx++;
+	}
+	len = 0;
+	idx = 0;
+	while (idx < columns)
+		len += widths[idx++] + 2;
+	free(widths);
+	return (len < cols);
 }
 
 int				print_columns(t_opts opts, t_array *namelist)
@@ -93,15 +113,11 @@ int				print_columns(t_opts opts, t_array *namelist)
 		num_rows = 2147383647;
 	while (num_rows < namelist->item_count)
 	{
-		wtotal = 0;
-		table = arrange(namelist, num_rows, &wtotal);
-		NGUARD(GFAIL(0, ft_perror("malloc")), table.ptr);
-		CLEAN_TAB;
-		if (wtotal < w.ws_col)
+		if (check(namelist, num_rows, w.ws_col))
 			break ;
 		num_rows++;
 	}
-	table = arrange(namelist, num_rows, &wtotal);
+	table = arrange(namelist, num_rows);
 	print_table(opts, &table);
 	CLEAN_TAB;
 	return (0);

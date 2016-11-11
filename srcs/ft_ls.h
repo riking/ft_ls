@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:27:42 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 17:22:07 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <time.h>
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
+# define MAX(a, b) ((a) > (b) ? (a) : (b))
+# define CEILDIV(a, b) (((a) + (b) - 1) / (b))
 
 # define GFAIL(val, expr) {(void)(expr); return (val);}
 # define GCONT(expr) {(void)expr; continue ;}
