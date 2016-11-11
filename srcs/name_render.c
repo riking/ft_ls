@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 17:50:50 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:14:53 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:20:20 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ char				*as_readlink(char *path)
 
 static const char	*suffix_str(t_opts opts, t_dirent *e)
 {
-	if (opts.dir_suffix && IS_TYPE(e, S_IFDIR))
+	if ((opts.name_suffix & 0x1) && IS_TYPE(e, S_IFDIR))
 		return ("/");
-	if (!opts.name_suffix)
+	if (opts.name_suffix != 0x3)
 		return ("");
 	if (IS_TYPE(e, S_IFREG) && (e->stat.st_mode & 0111))
 		return ("*");

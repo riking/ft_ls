@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 20:25:59 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:14:37 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:18:35 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ static t_option		g_options[] = {
 	{'f', OPT_SORT_NONE | OPT_LIST_ALL},
 	{'1', OPT_NO_COLUMNS},
 	{'d', OPT_NO_DIRS | OPT_ARGV_NOFOLLOW},
-	{'p', OPT_DIR_SUFX},
-	{'F', OPT_DIR_SUFX | OPT_NAME_SUFX},
 };
 
 static t_timeopt	g_time_opts[] = {
@@ -52,6 +50,10 @@ static bool			apply_special(char c, short *bits, t_opts *opts)
 		GFAIL(true, opts->sort_func = &sort_time);
 	if (c == 'S')
 		GFAIL(true, opts->sort_func = &sort_size);
+	if (c == 'p')
+		GFAIL(true, opts->name_suffix = 0x1);
+	if (c == 'F')
+		GFAIL(true, opts->name_suffix = 0x3);
 	return (false);
 }
 
@@ -81,10 +83,8 @@ static int			apply_opt(char c, short *bits, t_opts *opts)
 
 static void			bits_fields_2(short bits, t_opts *opts)
 {
-	if (bits & OPT_DIR_SUFX)
-		opts->dir_suffix = 1;
-	if (bits & OPT_NAME_SUFX)
-		opts->name_suffix = 1;
+	if (bits & OPT_NO_DIRS)
+		opts->no_dirs = 1;
 }
 
 static void			bits_to_fields(short bits, t_opts *opts)
@@ -109,8 +109,6 @@ static void			bits_to_fields(short bits, t_opts *opts)
 		opts->colors = 1;
 	if (bits & OPT_ARGV_NOFOLLOW)
 		opts->argv_nofollow = 1;
-	if (bits & OPT_NO_DIRS)
-		opts->no_dirs = 1;
 	bits_fields_2(bits, opts);
 }
 

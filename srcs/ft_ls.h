@@ -6,7 +6,7 @@
 /*   By: kyork <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/24 14:25:20 by kyork             #+#    #+#             */
-/*   Updated: 2016/11/10 16:14:20 by kyork            ###   ########.fr       */
+/*   Updated: 2016/11/10 16:19:34 by kyork            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <libft.h>
 # include <sys/types.h>
 # include <stdbool.h>
+# include <stdint.h>
 # include <time.h>
 
 # define ARRAYLEN(ary) ((ssize_t)(sizeof(ary) / sizeof(*ary)))
@@ -101,27 +102,26 @@ typedef enum		e_wtime {
 # define OPT_NAME_SUFX		(1 << 14)
 
 typedef struct		s_opts {
-	char			bad_opt;
-	t_wtime			time_field;
 	int				(*sort_func)(struct s_opts opts, t_dirent *a, t_dirent *b);
-	t_la_type		all_type;
-	bool			list_recurse:1;
-	bool			list_long:1;
-	bool			sort_none:1;
-	bool			sort_rev:1;
-	bool			sort_time:1;
-	bool			numeric_uids:1;
-	bool			list_full_time:1;
-	bool			allow_columns:1;
-	bool			colors:1;
-	bool			argv_nofollow:1;
-	bool			no_dirs:1;
-	bool			name_suffix:1;
-	bool			dir_suffix:1;
-
-	bool			columns:1;
-	bool			no_total:1;
 	int				opt_count;
+	t_wtime			time_field;
+	t_la_type		all_type;
+	uint8_t			list_recurse:1;
+	uint8_t			list_long:1;
+	uint8_t			sort_none:1;
+	uint8_t			sort_rev:1;
+	uint8_t			sort_time:1;
+	uint8_t			numeric_uids:1;
+	uint8_t			list_full_time:1;
+	uint8_t			allow_columns:1;
+	uint8_t			colors:1;
+	uint8_t			argv_nofollow:1;
+	uint8_t			no_dirs:1;
+	uint8_t			name_suffix:2;
+
+	uint8_t			columns:1;
+	uint8_t			no_total:1;
+	char			bad_opt;
 }					t_opts;
 
 t_dir_content		*ft_read_dir(char *path, t_la_type list_type);
