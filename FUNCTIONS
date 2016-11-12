@@ -1,0 +1,26 @@
+___error			inserted: errno.h
+___stack_chk_fail	inserted by compiler
+___stack_chk_guard	inserted by compiler
+_acl_free			mode + in ls -l
+_acl_get_entry		mode + in ls -l
+_acl_get_link_np	mode + in ls -l
+_closedir			permitted
+_ctime				permitted
+_exit				permitted
+_free				permitted
+_getgrgid			permitted
+_getpwuid			permitted
+_ioctl				columns: get width of terminal
+_isatty				columns: check if stdout is a terminal
+_listxattr			permitted
+_lstat$INODE64		permitted
+_malloc				permitted
+_opendir$INODE64	permitted
+_readdir$INODE64	permitted
+_readlink			permitted
+_stat$INODE64		permitted
+_strerror			permitted
+_time				permitted
+_write				permitted
+
+_perror				not used
