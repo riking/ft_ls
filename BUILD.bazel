@@ -1,0 +1,32 @@
+# warning: untested due to linux/darwin incompatibilities
+
+cc_binary(
+    name = "ft_ls",
+    srcs = ["srcs/main.c"],
+    deps = [":ft_ls_lib"],
+)
+
+cc_library(
+    name = "ft_ls_lib",
+    srcs = [
+        "srcs/argv_handler.c",
+        "srcs/blkcount.c",
+        "srcs/colors.c",
+        "srcs/columns.c",
+        "srcs/free_struct.c",
+        "srcs/ft_ls.h",
+        "srcs/ft_read_dir.c",
+        "srcs/lister.c",
+        "srcs/name_render.c",
+        "srcs/opt.c",
+        "srcs/part_render.c",
+        "srcs/print_table.c",
+        "srcs/render.c",
+        "srcs/sorting.c",
+        "srcs/uid_render.c",
+    ],
+    deps = [
+        "//github.com/riking/libft",
+        "//github.com/riking/libft:ft_printf",
+    ],
+)
